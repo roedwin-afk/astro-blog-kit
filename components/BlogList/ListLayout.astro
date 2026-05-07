@@ -1,0 +1,30 @@
+---
+import type { BlogListProps } from "../../types";
+import type { BlogPost } from "../../types";
+import BlogCard from "../BlogCard.astro";
+
+interface Props extends BlogListProps {}
+
+const { posts, blogBase, dateLocale, t } = Astro.props;
+---
+
+<div class="list">
+  {posts.map((post: BlogPost) => (
+    <BlogCard
+      post={post}
+      blogBase={blogBase}
+      dateLocale={dateLocale}
+      ctaText={t.blog.btncta}
+      variant="list"
+    />
+  ))}
+</div>
+
+<style>
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 4rem;
+  }
+</style>

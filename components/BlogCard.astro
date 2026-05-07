@@ -1,0 +1,248 @@
+---
+import type { BlogPost } from "../types";
+import { getFeaturedImageUrl } from "../utils/slug";
+
+interface Props {
+  post: BlogPost;
+  blogBase: string;
+  dateLocale: string;
+  ctaText: string;
+  variant?: "featured" | "small" | "grid" | "list";
+}
+
+const { post, blogBase, dateLocale, ctaText, variant = "grid" } = Astro.props;
+
+const imgUrl = getFeaturedImageUrl(post);
+const isFeatured = variant === "featured";
+const isSmall = variant === "small";
+const isList = variant === "list";
+---
+
+<article class={`blog-card blog-card--${variant}`}>
+  
+    href={`${blogBase}${post.slug}/`}
+    class={`blog-card__link ${isSmall || isList ? "blog-card__link--horizontal" : ""}`}
+  >
+
+    <!-- Imagen -->
+    <div class={`blog-card__thumb ${isSmall ? "blog-card__thumb--small" : ""}`}>
+      {imgUrl ? (
+        <img
+          src={imgUrl}
+          alt={post.title.rendered}
+          class="blog-card__img"
+          loading="lazy"
+        />
+      ) : (
+        <div class="blog-card__placeholder">
+          <svg
+            width={isFeatured ? 48 : 28}
+            height={isFeatured ? 48 : 28}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="M21 15l-5-5L5 21"/>
+          </svg>
+        </div>
+      )}
+      <div class="blog-card__overlay" aria-hidden="true"></div>
+      {isFeatured && (
+        <div class="blog-card__featured-badge">Featured</div>
+      )}
+    </div>
+
+    <!-- Contenido -->
+    <div class={`blog-card__body ${isSmall ? "blog-card__body--small" : ""}`}>
+      <time class="blog-card__date">
+        {new Date(post.date).toLocaleDateString(dateLocale, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </time>
+
+      <h2
+        class={`blog-card__title ${isSmall ? "blog-card__title--small" : ""}`}
+        set:html={post.title.rendered}
+      />
+
+      {(isFeatured || variant === "grid" || isList) && (
+        <div class="blog-card__excerpt" set:html={post.excerpt.rendered} />
+      )}
+
+      <span class="blog-card__cta">{ctaText} →</span>
+    </div>
+
+  </a>
+</article>
+
+<style>
+  .blog-card {
+    border: 2px solid var(--color-gray-200);
+    background-color: var(--color-white);
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .blog-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-yellow);
+    border-bottom-width: 4px;
+  }
+
+  .blog-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-card__link--horizontal {
+    flex-direction: row;
+  }
+
+  /* Thumb */
+  .blog-card__thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: var(--color-gray-100);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .blog-card__thumb--small {
+    width: 140px;
+    aspect-ratio: auto;
+    min-height: 100%;
+  }
+
+  @media (max-width: 480px) {
+    .blog-card__thumb--small {
+      width: 100px;
+    }
+  }
+
+  .blog-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .blog-card:hover .blog-card__img {
+    transform: scale(1.05);
+  }
+
+  .blog-card__placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gray-300);
+    background-color: var(--color-gray-100);
+  }
+
+  .blog-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(26,26,26,0.45) 100%);
+    pointer-events: none;
+  }
+
+  .blog-card__featured-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: var(--color-yellow);
+    color: var(--color-black);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.25rem 0.75rem;
+  }
+
+  /* Body */
+  .blog-card__body {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .blog-card__body--small {
+    padding: 1rem 1.25rem;
+    gap: 0.4rem;
+  }
+
+  .blog-card__date {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-gray-400);
+  }
+
+  .blog-card__title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-black);
+    line-height: 1.05;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .blog-card__title--small {
+    font-size: 1rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .blog-card__excerpt {
+    font-size: 0.9rem;
+    color: var(--color-gray-600);
+    line-height: 1.65;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .blog-card__excerpt :global(p) {
+    margin: 0;
+  }
+
+  .blog-card__cta {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-black);
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .blog-card--small .blog-card__cta {
+    padding-top: 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .blog-card:hover .blog-card__cta {
+    transform: translateX(4px);
+  }
+</style>

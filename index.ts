@@ -1,0 +1,41 @@
+// ─────────────────────────────────────────────────────────────
+// astro-blog-kit · index.ts
+// Punto de entrada principal del paquete.
+// Importa desde: 'astro-blog-kit'
+// ─────────────────────────────────────────────────────────────
+
+// Tipos
+export type {
+  BlogPost,
+  BlogListLayout,
+  BlogListProps,
+  BlogPostProps,
+  BlogTranslations,
+  BlogKitConfig,
+  I18nConfig,
+  PaginationProps,
+  PageStaticPath,
+  PostStaticPath,
+} from "./types";
+
+// Utils
+export {
+  // i18n
+  isI18nEnabled,
+  getLang,
+  useTranslations,
+  getBlogBase,
+  getPageBase,
+  getDateLocale,
+  // slug
+  getStaticPathsForPosts,
+  getStaticPathsForPages,
+  toSlug,
+  estimateReadingTime,
+  getFeaturedImageUrl,
+  // collections
+  normalizeWPPost,
+  sortPostsByDate,
+  filterPostsByLang,
+  preparePosts,
+} from "./utils/index.ts";

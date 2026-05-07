@@ -1,0 +1,101 @@
+---
+import type { PaginationProps } from "../types";
+
+interface Props extends PaginationProps {}
+
+const { currentPage, totalPages, basePath, blogBase, t } = Astro.props;
+
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Blog pagination">
+
+    {currentPage > 1 && (
+      
+       <a href={currentPage === 2 ? blogBase : `${basePath}${currentPage - 1}/`}
+        class="pagination__btn"
+      >
+        ← {t.blog.btn_prev}
+      </a>
+    )}
+
+    <div class="pagination__pages">
+      {pages.map((pageNum) => (
+        
+        <a  href={pageNum === 1 ? blogBase : `${basePath}${pageNum}/`}
+          class={`pagination__page ${pageNum === currentPage ? "pagination__page--active" : ""}`}
+          aria-current={pageNum === currentPage ? "page" : undefined}
+        >
+          {pageNum}
+        </a>
+      ))}
+    </div>
+
+    {currentPage < totalPages && (
+      <a href={`${basePath}${currentPage + 1}/`} class="pagination__btn">
+        {t.blog.btn_next} →
+      </a>
+    )}
+
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding-top: 3rem;
+    border-top: 2px solid var(--color-gray-200);
+  }
+
+  .pagination__btn {
+    padding: 0.6rem 1.25rem;
+    background-color: var(--color-black);
+    color: var(--color-white);
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .pagination__btn:hover {
+    background-color: var(--color-yellow);
+    color: var(--color-black);
+  }
+
+  .pagination__pages {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .pagination__page {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--color-gray-600);
+    border: 2px solid var(--color-gray-200);
+    text-decoration: none;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .pagination__page:hover {
+    border-color: var(--color-black);
+    color: var(--color-black);
+  }
+
+  .pagination__page--active {
+    background-color: var(--color-yellow);
+    border-color: var(--color-yellow);
+    color: var(--color-black);
+  }
+</style>

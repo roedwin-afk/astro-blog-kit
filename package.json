@@ -1,0 +1,31 @@
+{
+  "name": "astro-blog-kit",
+  "version": "0.1.0",
+  "description": "A ready-to-use blog system for Astro with optional i18n and multiple layouts",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./index.ts",
+    "./integration": "./integration.ts",
+    "./components": "./components/index.ts",
+    "./utils": "./utils/index.ts"
+  },
+  "files": [
+    "index.ts",
+    "integration.ts",
+    "types.ts",
+    "virtual.d.ts",
+    "components",
+    "utils"
+  ],
+  "keywords": [
+    "astro",
+    "blog",
+    "i18n",
+    "astro-integration",
+    "astro-component"
+  ],
+  "peerDependencies": {
+    "astro": "^4.0.0 || ^5.0.0"
+  }
+}

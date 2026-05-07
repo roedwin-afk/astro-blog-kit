@@ -1,0 +1,331 @@
+---
+interface Props {
+  postId: number;
+  apiRoute?: string;
+  replyToId?: number;
+}
+
+const { postId, apiRoute = "/api/comments", replyToId } = Astro.props;
+---
+
+<section class="comment-form" id="comment-form">
+  <h3 class="comment-form__title">Leave a Comment</h3>
+
+  <div class="comment-form__status comment-form__status--success" id="cf-success" aria-live="polite">
+    ✓ Your comment has been submitted and is awaiting moderation.
+  </div>
+
+  <div class="comment-form__status comment-form__status--error" id="cf-error" aria-live="polite">
+    Something went wrong. Please try again.
+  </div>
+
+  <form id="cf-form" novalidate>
+    <input type="hidden" name="post" value={postId} />
+    <input type="hidden" name="parent" id="cf-parent" value={replyToId ?? 0} />
+
+    <div class="comment-form__reply-indicator" id="cf-reply-indicator">
+      Replying to <strong id="cf-reply-name"></strong>
+      <button type="button" id="cf-cancel-reply">✕ Cancel</button>
+    </div>
+
+    <div class="comment-form__row">
+      <div class="comment-form__field">
+        <label for="cf-name" class="comment-form__label">
+          Name <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          id="cf-name"
+          name="author_name"
+          class="comment-form__input"
+          required
+          autocomplete="name"
+          placeholder="Your name"
+        />
+      </div>
+
+      <div class="comment-form__field">
+        <label for="cf-email" class="comment-form__label">
+          Email <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="email"
+          id="cf-email"
+          name="author_email"
+          class="comment-form__input"
+          required
+          autocomplete="email"
+          placeholder="your@email.com"
+        />
+        <p class="comment-form__hint">Your email will not be published.</p>
+      </div>
+    </div>
+
+    <div class="comment-form__field">
+      <label for="cf-content" class="comment-form__label">
+        Comment <span aria-hidden="true">*</span>
+      </label>
+      <textarea
+        id="cf-content"
+        name="content"
+        class="comment-form__textarea"
+        required
+        rows="5"
+        placeholder="Write your comment here..."
+      ></textarea>
+    </div>
+
+    <button type="submit" class="comment-form__submit" id="cf-submit">
+      <span id="cf-submit-text">Post Comment</span>
+      <span id="cf-submit-loading" aria-hidden="true">Sending...</span>
+    </button>
+  </form>
+</section>
+
+<script define:vars={{ apiRoute }}>
+  const form = document.getElementById("cf-form");
+  const submitBtn = document.getElementById("cf-submit");
+  const submitText = document.getElementById("cf-submit-text");
+  const submitLoading = document.getElementById("cf-submit-loading");
+  const successMsg = document.getElementById("cf-success");
+  const errorMsg = document.getElementById("cf-error");
+  const replyIndicator = document.getElementById("cf-reply-indicator");
+  const replyName = document.getElementById("cf-reply-name");
+  const cancelReply = document.getElementById("cf-cancel-reply");
+  const parentInput = document.getElementById("cf-parent");
+
+  // Maneja clicks en botones de reply desde Comments.astro
+  document.querySelectorAll("[data-reply-to]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const replyTo = btn.getAttribute("data-reply-to");
+      const name = btn.getAttribute("data-reply-name");
+
+      parentInput.value = replyTo;
+      replyName.textContent = name;
+      replyIndicator.classList.add("comment-form__reply-indicator--active");
+
+      // Scroll al form
+      document.getElementById("comment-form").scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  });
+
+  // Cancela reply
+  cancelReply.addEventListener("click", () => {
+    parentInput.value = "0";
+    replyIndicator.classList.remove("comment-form__reply-indicator--active");
+  });
+
+  // Submit
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Reset mensajes
+    successMsg.style.display = "none";
+    errorMsg.style.display = "none";
+
+    // Loading state
+    submitBtn.disabled = true;
+    submitText.style.display = "none";
+    submitLoading.style.display = "inline";
+
+    const formData = new FormData(form);
+    const payload = {
+      post: Number(formData.get("post")),
+      parent: Number(formData.get("parent")) || 0,
+      author_name: formData.get("author_name"),
+      author_email: formData.get("author_email"),
+      content: formData.get("content"),
+    };
+
+    try {
+      const res = await fetch(apiRoute, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Request failed");
+
+      // Éxito
+      successMsg.style.display = "block";
+      form.reset();
+      parentInput.value = "0";
+      replyIndicator.classList.remove("comment-form__reply-indicator--active");
+
+    } catch {
+      errorMsg.style.display = "block";
+    } finally {
+      submitBtn.disabled = false;
+      submitText.style.display = "inline";
+      submitLoading.style.display = "none";
+    }
+  });
+</script>
+
+<style>
+  .comment-form {
+    max-width: 720px;
+    margin: 3rem auto 0;
+    padding: 0 2rem 4rem;
+    font-family: var(--font-body);
+  }
+
+  .comment-form__title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 1.5rem;
+  }
+
+  .comment-form__status {
+    display: none;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .comment-form__status--success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  .comment-form__status--error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .comment-form__reply-indicator {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .comment-form__reply-indicator--active {
+    display: flex;
+  }
+
+  .comment-form__reply-indicator button {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    padding: 0;
+  }
+
+  .comment-form__reply-indicator button:hover {
+    color: var(--color-accent);
+  }
+
+  .comment-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .comment-form__row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .comment-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .comment-form__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .comment-form__label span {
+    color: var(--color-accent);
+  }
+
+  .comment-form__input,
+  .comment-form__textarea {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    transition: border-color 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .comment-form__input:focus,
+  .comment-form__textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+
+  .comment-form__textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .comment-form__hint {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    margin: 0;
+  }
+
+  .comment-form__submit {
+    margin-top: 1.25rem;
+    padding: 0.7rem 1.75rem;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .comment-form__submit:hover {
+    opacity: 0.85;
+  }
+
+  .comment-form__submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  #cf-submit-loading {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .comment-form {
+      padding: 0 1.25rem 4rem;
+    }
+  }
+</style>

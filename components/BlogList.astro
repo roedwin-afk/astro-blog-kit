@@ -1,0 +1,136 @@
+---
+import type { BlogListProps } from "../types";
+import { getDateLocale, getBlogBase } from "../utils/i18n";
+import MagazineLayout from "./BlogList/MagazineLayout.astro";
+import GridLayout from "./BlogList/GridLayout.astro";
+import ListLayout from "./BlogList/ListLayout.astro";
+import Pagination from "./Pagination.astro";
+
+interface Props extends BlogListProps {}
+
+const {
+  posts,
+  currentPage,
+  totalPages,
+  basePath,
+  t,
+  locale,
+  layout = "magazine",
+} = Astro.props;
+
+const dateLocale = getDateLocale(locale);
+const base = (import.meta as any).env?.BASE_URL ?? "/";
+const blogBase = getBlogBase(locale, base);
+---
+
+<section class="blog">
+  <div class="blog__container">
+
+    <div class="blog__header">
+      <div class="blog__badge">{t.blog.tagline}</div>
+      <h1 class="blog__title">
+        {t.blog.title_line1}
+        <span class="blog__title-highlight">{t.blog.title_line2}</span>
+      </h1>
+      <p class="blog__desc">{t.blog.description}</p>
+    </div>
+
+    {layout === "magazine" && (
+      <MagazineLayout
+        posts={posts}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={basePath}
+        blogBase={blogBase}
+        dateLocale={dateLocale}
+        t={t}
+        locale={locale}
+      />
+    )}
+
+    {layout === "grid" && (
+      <GridLayout
+        posts={posts}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={basePath}
+        blogBase={blogBase}
+        dateLocale={dateLocale}
+        t={t}
+        locale={locale}
+      />
+    )}
+
+    {layout === "list" && (
+      <ListLayout
+        posts={posts}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={basePath}
+        blogBase={blogBase}
+        dateLocale={dateLocale}
+        t={t}
+        locale={locale}
+      />
+    )}
+
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      basePath={basePath}
+      blogBase={blogBase}
+      t={t}
+    />
+
+  </div>
+</section>
+
+<style>
+  .blog {
+    background-color: var(--color-white);
+    padding: 6rem 1rem;
+    min-height: 100vh;
+  }
+
+  .blog__container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+  }
+
+  .blog__header {
+    margin-bottom: 4rem;
+    max-width: 48rem;
+  }
+
+  .blog__badge {
+    display: inline-block;
+    background-color: var(--color-yellow);
+    color: var(--color-black);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    padding: 0.35rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .blog__title {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 700;
+    color: var(--color-black);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .blog__title-highlight {
+    background-color: var(--color-black);
+    color: var(--color-yellow);
+    padding: 0 0.3rem;
+  }
+
+  .blog__desc {
+    color: var(--color-gray-600);
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+</style>

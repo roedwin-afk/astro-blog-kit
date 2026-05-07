@@ -1,0 +1,60 @@
+---
+import type { BlogListProps } from "../../types";
+import BlogCard from "../BlogCard.astro";
+import { getDateLocale, getBlogBase } from "../../utils/i18n";
+
+interface Props extends BlogListProps {}
+
+const { posts, blogBase, dateLocale, t } = Astro.props;
+
+const featured = posts[0];
+const rest = posts.slice(1);
+---
+
+<div class="magazine">
+
+  {featured && (
+    <BlogCard
+      post={featured}
+      blogBase={blogBase}
+      dateLocale={dateLocale}
+      ctaText={t.blog.btncta}
+      variant="featured"
+    />
+  )}
+
+  <div class="magazine__right">
+    {rest.map((post: import("../../types").BlogPost) => (
+      <BlogCard
+        post={post}
+        blogBase={blogBase}
+        dateLocale={dateLocale}
+        ctaText={t.blog.btncta}
+        variant="small"
+      />
+    ))}
+  </div>
+
+</div>
+
+<style>
+  .magazine {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  @media (min-width: 1024px) {
+    .magazine {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: start;
+    }
+  }
+
+  .magazine__right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+</style>

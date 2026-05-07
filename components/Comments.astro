@@ -1,0 +1,245 @@
+---
+import type { WPComment } from "../utils/wordpress";
+
+interface Props {
+  comments: WPComment[];
+  postId: number;
+}
+
+const { comments, postId } = Astro.props;
+
+// Organiza comentarios en árbol (replies anidadas)
+const topLevel = comments.filter((c: WPComment) => c.parent === 0);
+const getReplies = (parentId: number) =>
+  comments.filter((c: WPComment) => c.parent === parentId);
+---
+
+<section class="comments" id="comments">
+
+  <h2 class="comments__title">
+    {comments.length === 0
+      ? "No comments yet"
+      : `${comments.length} Comment${comments.length === 1 ? "" : "s"}`
+    }
+  </h2>
+
+  {comments.length === 0 && (
+    <p class="comments__empty">Be the first to leave a comment.</p>
+  )}
+
+  {topLevel.length > 0 && (
+    <ol class="comments__list">
+      {topLevel.map((comment: WPComment) => {
+        const replies = getReplies(comment.id);
+        const avatar = comment.author_avatar_urls?.["48"];
+
+        return (
+          <li class="comment" id={`comment-${comment.id}`}>
+            <div class="comment__header">
+              {avatar && (
+                <img
+                  src={avatar}
+                  alt={comment.author_name}
+                  class="comment__avatar"
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                />
+              )}
+              <div class="comment__meta">
+                <span class="comment__author">{comment.author_name}</span>
+                <time class="comment__date">
+                  {new Date(comment.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              </div>
+            </div>
+
+            <div
+              class="comment__body"
+              set:html={comment.content.rendered}
+            />
+
+            <button
+              class="comment__reply-btn"
+              data-reply-to={comment.id}
+              data-reply-name={comment.author_name}
+            >
+              ↩ Reply
+            </button>
+
+            {replies.length > 0 && (
+              <ol class="comment__replies">
+                {replies.map((reply: WPComment) => {
+                  const replyAvatar = reply.author_avatar_urls?.["48"];
+                  return (
+                    <li class="comment comment--reply" id={`comment-${reply.id}`}>
+                      <div class="comment__header">
+                        {replyAvatar && (
+                          <img
+                            src={replyAvatar}
+                            alt={reply.author_name}
+                            class="comment__avatar comment__avatar--small"
+                            width="36"
+                            height="36"
+                            loading="lazy"
+                          />
+                        )}
+                        <div class="comment__meta">
+                          <span class="comment__author">{reply.author_name}</span>
+                          <time class="comment__date">
+                            {new Date(reply.date).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </time>
+                        </div>
+                      </div>
+                      <div
+                        class="comment__body"
+                        set:html={reply.content.rendered}
+                      />
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  )}
+
+</section>
+
+<style>
+  .comments {
+    max-width: 720px;
+    margin: 4rem auto 0;
+    padding: 0 2rem;
+    font-family: var(--font-body);
+  }
+
+  .comments__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .comments__empty {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+
+  .comments__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* Comment */
+  .comment {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .comment--reply {
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--color-border);
+  }
+
+  .comment__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .comment__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .comment__avatar--small {
+    width: 36px;
+    height: 36px;
+  }
+
+  .comment__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .comment__author {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .comment__date {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+  }
+
+  .comment__body {
+    font-size: 0.95rem;
+    color: var(--color-muted-light);
+    line-height: 1.75;
+  }
+
+  .comment__body :global(p) {
+    margin: 0 0 0.75rem;
+  }
+
+  .comment__body :global(p:last-child) {
+    margin: 0;
+  }
+
+  .comment__reply-btn {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--color-muted);
+    padding: 0;
+    transition: color 0.15s;
+  }
+
+  .comment__reply-btn:hover {
+    color: var(--color-accent);
+  }
+
+  .comment__replies {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .comments {
+      padding: 0 1.25rem;
+    }
+  }
+</style>
