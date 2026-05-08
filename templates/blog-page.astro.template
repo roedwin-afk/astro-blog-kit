@@ -1,0 +1,46 @@
+---
+import { BlogList } from "astro-blog-kit/components";
+import { createWPClient, getStaticPathsForPages } from "astro-blog-kit/utils";
+import config from "../../../../blog.config";
+
+export async function getStaticPaths() {
+  const wp = createWPClient(config.wpUrl);
+  const { posts } = await wp.getPosts({ perPage: 100 });
+  return getStaticPathsForPages(posts, { postsPerPage: config.postsPerPage ?? 5 });
+}
+
+const { posts, currentPage, totalPages } = Astro.props;
+
+const t = {
+  blog: {
+    tagline: "Our Blog",
+    title_line1: "Latest",
+    title_line2: "Articles",
+    description: "Welcome to our blog.",
+    btncta: "Read more",
+    btn_prev: "Previous",
+    btn_next: "Next",
+  },
+};
+---
+
+<html lang={config.locale ?? "en"}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog — Page {currentPage}</title>
+  </head>
+  <body>
+    <BlogList
+      posts={posts}
+      currentPage={currentPage}
+      totalPages={totalPages}
+      basePath="/blog/page/"
+      blogBase="/blog/"
+      dateLocale={config.locale ?? "en"}
+      t={t}
+      locale={config.locale ?? "en"}
+      layout={config.defaultLayout ?? "magazine"}
+    />
+  </body>
+</html>

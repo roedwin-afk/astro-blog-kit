@@ -1,0 +1,24 @@
+import { defineBlogConfig } from 'astro-blog-kit';
+
+export default defineBlogConfig({
+  wpUrl: '__WP_URL__',
+  postsPerPage: __POSTS_PER_PAGE__,
+  defaultLayout: '__DEFAULT_LAYOUT__',
+  locale: '__LOCALE__',
+  theme: {
+    accent: '#facc15',
+    background: '#ffffff',
+    surface: '#f8f8f8',
+    text: '#0a0a0a',
+    muted: '#6b7280',
+    mutedLight: '#4b5563',
+    border: '#e5e7eb',
+    black: '#0a0a0a',
+    white: '#ffffff',
+    fontHeading: 'Georgia, serif',
+    fontBody: 'system-ui, sans-serif',
+    fontMono: 'monospace',
+    fontDisplay: 'Georgia, serif',
+    containerMax: '1200px',
+  },
+});

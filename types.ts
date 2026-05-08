@@ -9,6 +9,7 @@
  * Compatible con WordPress REST API (_embedded).
  */
 export interface BlogPost {
+  id?: number;
   slug: string;
   date: string;
   modified?: string;
@@ -96,6 +97,37 @@ export interface BlogPostProps {
 
 // ── Config del paquete ────────────────────────────────────────
 
+export interface BlogTheme {
+  /** Color de acento principal. @default "#facc15" */
+  accent?: string;
+  /** Color de fondo. @default "#ffffff" */
+  background?: string;
+  /** Color de superficie (cards, sidebars). @default "#f8f8f8" */
+  surface?: string;
+  /** Color de texto principal. @default "#0a0a0a" */
+  text?: string;
+  /** Color de texto secundario. @default "#6b7280" */
+  muted?: string;
+  /** Color de texto secundario claro. @default "#9ca3af" */
+  mutedLight?: string;
+  /** Color de bordes. @default "#e5e7eb" */
+  border?: string;
+  /** Color negro para layouts. @default "#0a0a0a" */
+  black?: string;
+  /** Color blanco para layouts. @default "#ffffff" */
+  white?: string;
+  /** Fuente de títulos. @default "Georgia, serif" */
+  fontHeading?: string;
+  /** Fuente de cuerpo. @default "system-ui, sans-serif" */
+  fontBody?: string;
+  /** Fuente monospace. @default "monospace" */
+  fontMono?: string;
+  /** Fuente display (títulos grandes). @default "Georgia, serif" */
+  fontDisplay?: string;
+  /** Ancho máximo del contenedor. @default "1200px" */
+  containerMax?: string;
+}
+
 export interface BlogKitConfig {
   /** @default 5 */
   postsPerPage?: number;
@@ -104,6 +136,8 @@ export interface BlogKitConfig {
   defaultLayout?: BlogListLayout;
   /** @default "blog" */
   collectionName?: string;
+  /** Tema visual del blog */
+  theme?: BlogTheme;
 }
 
 // ── getStaticPaths ────────────────────────────────────────────

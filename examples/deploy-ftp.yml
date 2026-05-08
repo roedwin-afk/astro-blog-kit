@@ -1,0 +1,98 @@
+# ─────────────────────────────────────────────────────────────
+# astro-blog-kit · examples/deploy-ftp.yml
+#
+# GitHub Actions workflow para deploy automático vía FTP.
+# Copia este archivo a .github/workflows/deploy.yml en tu proyecto.
+#
+# Triggers:
+#   - Push a main
+#   - Webhook desde WordPress (al publicar post o comentario)
+#   - Cron job opcional (cada 6 horas)
+#
+# Secrets requeridos en GitHub → Settings → Secrets:
+#   - FTP_HOST       → hostname o IP de tu servidor
+#   - FTP_USERNAME   → usuario FTP
+#   - FTP_PASSWORD   → contraseña FTP
+#   - WP_API_URL     → URL de tu WordPress (ej: https://cms.tudominio.com)
+# ─────────────────────────────────────────────────────────────
+
+name: Deploy Blog
+
+on:
+  # 1. Push a main
+  push:
+    branches:
+      - main
+
+  # 2. Webhook desde WordPress
+  # En WordPress instala el plugin "WP Webhooks" o similar
+  # y configura el webhook apuntando a:
+  # https://api.github.com/repos/TU_USUARIO/TU_REPO/dispatches
+  # con el header Authorization: Bearer TU_GITHUB_TOKEN
+  # y body: { "event_type": "wp_update" }
+  repository_dispatch:
+    types:
+      - wp_update        # nuevo post publicado
+      - wp_comment       # nuevo comentario aprobado
+
+  # 3. Cron job — rebuild cada 6 horas (opcional, puedes eliminarlo)
+  schedule:
+    - cron: "0 */6 * * *"
+
+  # 4. Manual desde GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Node.js ─────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      # ── Instalar dependencias ────────────────────────────────
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Build ────────────────────────────────────────────────
+      - name: Build Astro site
+        run: npm run build
+        env:
+          # Pasa la URL de WordPress al build para los fetchers
+          WP_API_URL: ${{ secrets.WP_API_URL }}
+          # Agrega aquí otras variables de entorno que necesites
+          # PUBLIC_SITE_URL: https://tudominio.com
+
+      # ── Deploy FTP ───────────────────────────────────────────
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /public_html/
+          # Opciones recomendadas:
+          dangerous-clean-slate: false  # No borra archivos existentes
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+
+      # ── Notificación (opcional) ──────────────────────────────
+      - name: Notify on success
+        if: success()
+        run: echo "✅ Deploy completed successfully at $(date)"
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "❌ Deploy failed at $(date)"

@@ -18,6 +18,7 @@ import type { BlogPost, BlogKitConfig } from "../types";
  */
 export function normalizeWPPost(wpPost: Record<string, any>): BlogPost {
   return {
+    id: wpPost.id,
     slug: wpPost.slug,
     date: wpPost.date,
     modified: wpPost.modified,

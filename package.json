@@ -4,6 +4,9 @@
   "description": "A ready-to-use blog system for Astro with optional i18n and multiple layouts",
   "type": "module",
   "license": "MIT",
+  "bin": {
+    "astro-blog-kit": "./cli.ts"
+  },
   "exports": {
     ".": "./index.ts",
     "./integration": "./integration.ts",
@@ -15,6 +18,9 @@
     "integration.ts",
     "types.ts",
     "virtual.d.ts",
+    "cli.ts",
+    "define-config.ts",
+    "templates",
     "components",
     "utils"
   ],
@@ -25,6 +31,11 @@
     "astro-integration",
     "astro-component"
   ],
+  "devDependencies": {
+    "@clack/prompts": "latest",
+    "@types/node": "^25.6.2",
+    "astro": "^4.0.0 || ^5.0.0"
+  },
   "peerDependencies": {
     "astro": "^4.0.0 || ^5.0.0"
   }

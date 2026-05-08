@@ -1,14 +1,14 @@
 ---
 import type { BlogListProps } from "../../types";
+import type { BlogPost } from "../../types";
 import BlogCard from "../BlogCard.astro";
-import { getDateLocale, getBlogBase } from "../../utils/i18n";
 
 interface Props extends BlogListProps {}
 
 const { posts, blogBase, dateLocale, t } = Astro.props;
 
-const featured = posts[0];
-const rest = posts.slice(1);
+const featured = posts[0] as BlogPost | undefined;
+const rest = posts.slice(1) as BlogPost[];
 ---
 
 <div class="magazine">
@@ -24,7 +24,7 @@ const rest = posts.slice(1);
   )}
 
   <div class="magazine__right">
-    {rest.map((post: import("../../types").BlogPost) => (
+    {rest.map((post: BlogPost) => (
       <BlogCard
         post={post}
         blogBase={blogBase}

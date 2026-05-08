@@ -20,7 +20,7 @@ const isList = variant === "list";
 
 <article class={`blog-card blog-card--${variant}`}>
   
-    href={`${blogBase}${post.slug}/`}
+  <a  href={`${blogBase}${post.slug}/`}
     class={`blog-card__link ${isSmall || isList ? "blog-card__link--horizontal" : ""}`}
   >
 
