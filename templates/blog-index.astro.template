@@ -1,7 +1,7 @@
 ---
 import { BlogList } from "astro-blog-kit/components";
 import { createWPClient } from "astro-blog-kit/utils";
-import config from "../../blog.config";
+import config from "../../../blog.config";
 
 const wp = createWPClient(config.wpUrl);
 const { posts, totalPages } = await wp.getPosts({ perPage: config.postsPerPage ?? 5 });

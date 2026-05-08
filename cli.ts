@@ -18,7 +18,7 @@ function copyTemplate(
   destPath: string,
   replacements: Record<string, string>
 ) {
-  const templatePath = path.join(__dirname, "templates", templateName);
+  const templatePath = path.join(__dirname, "..", "templates", templateName);
   let content = fs.readFileSync(templatePath, "utf-8");
 
   for (const [key, value] of Object.entries(replacements)) {

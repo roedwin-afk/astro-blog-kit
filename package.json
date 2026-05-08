@@ -1,9 +1,16 @@
 {
   "name": "astro-blog-kit",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "A ready-to-use blog system for Astro with WordPress headless support, optional i18n, multiple layouts, and a comment system.",
   "type": "module",
   "license": "MIT",
+  "bin": {
+    "astro-blog-kit": "bin/cli.js"
+  },
+  "scripts": {
+    "build:cli": "esbuild cli.ts --bundle --platform=node --format=esm --outfile=bin/cli.js --external:@clack/prompts",
+    "prepublishOnly": "npm run build:cli"
+  },
   "exports": {
     ".": "./index.ts",
     "./integration": "./integration.ts",
@@ -15,6 +22,7 @@
     "integration.ts",
     "types.ts",
     "virtual.d.ts",
+    "bin",
     "cli.ts",
     "define-config.ts",
     "templates",
@@ -31,11 +39,15 @@
     "headless-cms"
   ],
   "peerDependencies": {
-    "astro": "^4.0.0 || ^5.0.0"
+    "astro": "^4.0.0 || ^5.0.0 || ^6.0.0"
+  },
+  "dependencies": {
+    "@clack/prompts": "latest"
   },
   "devDependencies": {
-    "@clack/prompts": "latest",
     "@types/node": "latest",
-    "astro": "^6.3.1"
+    "astro": "^6.3.1",
+    "esbuild": "^0.28.0",
+    "tsx": "latest"
   }
 }

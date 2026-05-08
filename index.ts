@@ -38,4 +38,8 @@ export {
   sortPostsByDate,
   filterPostsByLang,
   preparePosts,
-} from "./utils/index.ts";
+} from "./utils/index.js";
+
+// Define config
+export { defineBlogConfig, toBlogKitConfig } from "./define-config";
+export type { BlogConfig } from "./define-config";
