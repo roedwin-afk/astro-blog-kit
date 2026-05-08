@@ -1,12 +1,9 @@
 {
   "name": "astro-blog-kit",
   "version": "0.1.0",
-  "description": "A ready-to-use blog system for Astro with optional i18n and multiple layouts",
+  "description": "A ready-to-use blog system for Astro with WordPress headless support, optional i18n, multiple layouts, and a comment system.",
   "type": "module",
   "license": "MIT",
-  "bin": {
-    "astro-blog-kit": "./cli.ts"
-  },
   "exports": {
     ".": "./index.ts",
     "./integration": "./integration.ts",
@@ -27,16 +24,18 @@
   "keywords": [
     "astro",
     "blog",
+    "wordpress",
     "i18n",
     "astro-integration",
-    "astro-component"
+    "astro-component",
+    "headless-cms"
   ],
-  "devDependencies": {
-    "@clack/prompts": "latest",
-    "@types/node": "^25.6.2",
-    "astro": "^4.0.0 || ^5.0.0"
-  },
   "peerDependencies": {
     "astro": "^4.0.0 || ^5.0.0"
+  },
+  "devDependencies": {
+    "@clack/prompts": "latest",
+    "@types/node": "latest",
+    "astro": "^6.3.1"
   }
 }
