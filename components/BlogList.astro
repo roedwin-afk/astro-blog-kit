@@ -6,6 +6,9 @@ import GridLayout from "./BlogList/GridLayout.astro";
 import ListLayout from "./BlogList/ListLayout.astro";
 import Pagination from "./Pagination.astro";
 
+import FeaturedLayout from "./BlogList/FeaturedLayout.astro";
+import CardsLayout from "./BlogList/CardsLayout.astro";
+
 interface Props extends BlogListProps {}
 
 const {
@@ -61,8 +64,21 @@ const blogBase = getBlogBase(locale, base);
       />
     )}
 
-    {layout === "list" && (
+    {layout === "featured" && (
       <ListLayout
+        posts={posts}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={basePath}
+        blogBase={blogBase}
+        dateLocale={dateLocale}
+        t={t}
+        locale={locale}
+      />
+    )}
+
+    {layout === "cards" && (
+      <CardsLayout
         posts={posts}
         currentPage={currentPage}
         totalPages={totalPages}

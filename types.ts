@@ -41,7 +41,7 @@ export interface BlogPost {
 
 // ── Layouts ───────────────────────────────────────────────────
 
-export type BlogListLayout = "grid" | "list" | "magazine";
+export type BlogListLayout = "grid" | "magazine" | "featured" | "cards";
 
 // ── i18n ──────────────────────────────────────────────────────
 

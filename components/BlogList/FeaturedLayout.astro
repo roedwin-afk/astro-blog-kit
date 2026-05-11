@@ -1,0 +1,77 @@
+---
+import type { BlogListProps } from "../../types";
+import type { BlogPost } from "../../types";
+import BlogCard from "../BlogCard.astro";
+
+interface Props extends BlogListProps {}
+
+const { posts, blogBase, dateLocale, t } = Astro.props;
+
+const featured = posts[0] as BlogPost | undefined;
+const rest = posts.slice(1) as BlogPost[];
+---
+
+<div class="featured">
+
+  {featured && (
+    <div class="featured__hero">
+      <BlogCard
+        post={featured}
+        blogBase={blogBase}
+        dateLocale={dateLocale}
+        ctaText={t.blog.btncta}
+        variant="featured"
+      />
+    </div>
+  )}
+
+  {rest.length > 0 && (
+    <div class="featured__grid">
+      {rest.map((post: BlogPost) => (
+        <BlogCard
+          post={post}
+          blogBase={blogBase}
+          dateLocale={dateLocale}
+          ctaText={t.blog.btncta}
+          variant="grid"
+        />
+      ))}
+    </div>
+  )}
+
+</div>
+
+<style>
+  .featured {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .featured__hero {
+    width: 100%;
+  }
+
+  .featured__hero .blog-card--featured .blog-card__thumb {
+    aspect-ratio: 21 / 9;
+  }
+
+  .featured__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .featured__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .featured__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

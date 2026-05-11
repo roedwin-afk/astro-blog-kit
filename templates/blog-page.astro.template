@@ -5,7 +5,8 @@ import config from "../../../../blog.config";
 
 export async function getStaticPaths() {
   const wp = createWPClient(config.wpUrl);
-  const { posts } = await wp.getPosts({ perPage: 100 });
+  
+  const posts = await wp.getAllPosts();
   return getStaticPathsForPages(posts, { postsPerPage: config.postsPerPage ?? 5 });
 }
 
@@ -22,6 +23,8 @@ const t = {
     btn_next: "Next",
   },
 };
+
+const base = import.meta.env.BASE_URL;
 ---
 
 <html lang={config.locale ?? "en"}>
@@ -35,8 +38,8 @@ const t = {
       posts={posts}
       currentPage={currentPage}
       totalPages={totalPages}
-      basePath="/blog/page/"
-      blogBase="/blog/"
+      basePath={`${base}blog/page/`}
+      blogBase={`${base}blog/`}
       dateLocale={config.locale ?? "en"}
       t={t}
       locale={config.locale ?? "en"}

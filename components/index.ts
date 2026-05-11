@@ -10,5 +10,5 @@ export { default as BlogPost } from "./BlogPost.astro";
 export { default as Pagination } from "./Pagination.astro";
 export { default as Comments } from "./Comments.astro";
 export { default as CommentForm } from "./CommentForm.astro";
+export { MagazineLayout, GridLayout, FeaturedLayout, CardsLayout } from "./BlogList/index.ts";
 
-export { MagazineLayout, GridLayout, ListLayout } from "./BlogList/index.ts";
