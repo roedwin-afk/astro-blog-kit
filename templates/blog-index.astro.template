@@ -2,43 +2,36 @@
 import { BlogList } from "astro-blog-kit/components";
 import { createWPClient } from "astro-blog-kit/utils";
 import config from "../../../blog.config";
+__LAYOUT_IMPORT__
 
 const wp = createWPClient(config.wpUrl);
 const { posts, totalPages } = await wp.getPosts({ perPage: config.postsPerPage ?? 5 });
 
 const t = {
   blog: {
-    tagline: "Our Blog",
-    title_line1: "Latest",
-    title_line2: "Articles",
-    description: "Welcome to our blog.",
-    btncta: "Read more",
-    btn_prev: "Previous",
-    btn_next: "Next",
+    tagline: "__T_TAGLINE__",
+    title_line1: "__T_TITLE_LINE1__",
+    title_line2: "__T_TITLE_LINE2__",
+    description: "__T_DESCRIPTION__",
+    btncta: "__T_BTNCTA__",
+    btn_prev: "__T_BTN_PREV__",
+    btn_next: "__T_BTN_NEXT__",
   },
 };
 
 const base = import.meta.env.BASE_URL;
 ---
 
-<html lang={config.locale ?? "en"}>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blog</title>
-  </head>
-  <body>
-    <BlogList
-      posts={posts}
-      currentPage={1}
-      totalPages={totalPages}
-      basePath="/blog/page/"
-      basePath={`${base}blog/page/`}
-      blogBase={`${base}blog/`}
-      dateLocale={config.locale ?? "en"}
-      t={t}
-      locale={config.locale ?? "en"}
-      layout={config.defaultLayout ?? "magazine"}
-    />
-  </body>
-</html>
+__LAYOUT_OPEN__
+  <BlogList
+    posts={posts}
+    currentPage={1}
+    totalPages={totalPages}
+    basePath={`${base}blog/page/`}
+    blogBase={`${base}blog/`}
+    dateLocale={config.locale ?? "en"}
+    t={t}
+    locale={config.locale ?? "en"}
+    layout={config.defaultLayout ?? "magazine"}
+  />
+__LAYOUT_CLOSE__

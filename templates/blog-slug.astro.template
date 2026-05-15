@@ -2,6 +2,7 @@
 import { BlogPost, Comments, CommentForm } from "astro-blog-kit/components";
 import { createWPClient, getStaticPathsForPosts } from "astro-blog-kit/utils";
 import config from "../../../blog.config";
+__LAYOUT_IMPORT_SLUG__
 
 export async function getStaticPaths() {
   const wp = createWPClient(config.wpUrl);
@@ -16,26 +17,19 @@ const comments = post.id ? await wp.getComments(post.id) : [];
 
 const t = {
   blog: {
-    tagline: "Our Blog",
-    title_line1: "Latest",
-    title_line2: "Articles",
-    description: "Welcome to our blog.",
-    btncta: "Read more",
-    btn_prev: "Back to blog",
-    btn_next: "Next",
+    tagline: "__T_TAGLINE__",
+    title_line1: "__T_TITLE_LINE1__",
+    title_line2: "__T_TITLE_LINE2__",
+    description: "__T_DESCRIPTION__",
+    btncta: "__T_BTNCTA__",
+    btn_prev: "__T_BTN_PREV__",
+    btn_next: "__T_BTN_NEXT__",
   },
 };
 ---
 
-<html lang={config.locale ?? "en"}>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title set:html={post.title.rendered} />
-  </head>
-  <body>
-    <BlogPost post={post} t={t} lang={config.locale ?? "en"} />
-    <Comments comments={comments} postId={post.id ?? 0} />
-    <CommentForm postId={post.id ?? 0} apiRoute="/api/comments" />
-  </body>
-</html>
+__LAYOUT_OPEN__
+  <BlogPost post={post} t={t} lang={config.locale ?? "en"} />
+  <Comments comments={comments} postId={post.id ?? 0} />
+  <CommentForm postId={post.id ?? 0} apiRoute="/api/comments" />
+__LAYOUT_CLOSE__

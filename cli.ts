@@ -65,6 +65,11 @@ async function main() {
             }
           },
         }),
+      hasLayout: () =>
+        p.confirm({
+          message: "Do you have a Layout component?",
+          initialValue: true,
+        }),
 
       postsPerPage: () =>
         p.text({
@@ -80,18 +85,22 @@ async function main() {
       defaultLayout: () =>
         p.select({
           message: "Default layout",
+          // DESPUÉS
           options: [
             { value: "magazine", label: "Magazine — featured post + grid" },
             { value: "grid", label: "Grid — 3 column card grid" },
-            { value: "list", label: "List — horizontal rows" },
+            { value: "featured", label: "Featured — large hero + grid below" },
+            { value: "cards", label: "Cards — image background + text overlay" },
           ],
         }),
 
       locale: () =>
-        p.text({
+        p.select({
           message: "Default locale",
-          placeholder: "en",
-          initialValue: "en",
+          options: [
+            { value: "en", label: "English" },
+            { value: "es", label: "Español" },
+          ],
         }),
 
       i18n: () =>
@@ -110,11 +119,53 @@ async function main() {
 
   // ── Replacements ──────────────────────────────────────────
 
+  const translations: Record<string, Record<string, string>> = {
+    en: {
+      T_TAGLINE: "Our Blog",
+      T_TITLE_LINE1: "Latest",
+      T_TITLE_LINE2: "Articles",
+      T_DESCRIPTION: "Welcome to our blog.",
+      T_BTNCTA: "Read more",
+      T_BTN_PREV: "Previous",
+      T_BTN_NEXT: "Next",
+    },
+    es: {
+      T_TAGLINE: "Nuestro Blog",
+      T_TITLE_LINE1: "Últimos",
+      T_TITLE_LINE2: "Artículos",
+      T_DESCRIPTION: "Bienvenido a nuestro blog.",
+      T_BTNCTA: "Leer más",
+      T_BTN_PREV: "Anterior",
+      T_BTN_NEXT: "Siguiente",
+    },
+  };
+
+  const locale = answers.locale as string;
+  const t = translations[locale] ?? translations["en"];
+
+  const hasLayout = answers.hasLayout as boolean;
+
   const replacements: Record<string, string> = {
     WP_URL: answers.wpUrl as string,
     POSTS_PER_PAGE: answers.postsPerPage as string,
     DEFAULT_LAYOUT: answers.defaultLayout as string,
     LOCALE: answers.locale as string,
+    LAYOUT_IMPORT: hasLayout
+      ? `import Layout from "../../layouts/Layout.astro";`
+      : "",
+    LAYOUT_IMPORT_PAGE: hasLayout
+      ? `import Layout from "../../../layouts/Layout.astro";`
+      : "",
+    LAYOUT_IMPORT_SLUG: hasLayout
+      ? `import Layout from "../../layouts/Layout.astro";`
+      : "",
+    LAYOUT_OPEN: hasLayout
+      ? `<Layout>`
+      : `<html lang={config.locale ?? "en"}>\n  <head>\n    <meta charset="UTF-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n    <title>Blog</title>\n  </head>\n  <body>`,
+    LAYOUT_CLOSE: hasLayout
+      ? `</Layout>`
+      : `  </body>\n</html>`,
+    ...t
   };
 
   // ── Copia archivos ────────────────────────────────────────

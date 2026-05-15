@@ -3,11 +3,10 @@ import type { BlogListProps } from "../types";
 import { getDateLocale, getBlogBase } from "../utils/i18n";
 import MagazineLayout from "./BlogList/MagazineLayout.astro";
 import GridLayout from "./BlogList/GridLayout.astro";
-import ListLayout from "./BlogList/ListLayout.astro";
-import Pagination from "./Pagination.astro";
-
 import FeaturedLayout from "./BlogList/FeaturedLayout.astro";
 import CardsLayout from "./BlogList/CardsLayout.astro";
+import Pagination from "./Pagination.astro";
+
 
 interface Props extends BlogListProps {}
 
@@ -65,7 +64,7 @@ const blogBase = getBlogBase(locale, base);
     )}
 
     {layout === "featured" && (
-      <ListLayout
+      <FeaturedLayout
         posts={posts}
         currentPage={currentPage}
         totalPages={totalPages}
