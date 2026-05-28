@@ -11,7 +11,7 @@ export interface BlogConfig {
   /** Posts por página. @default 5 */
   postsPerPage?: number;
   /** Layout por defecto. @default "magazine" */
-  defaultLayout?: "grid" | "list" | "magazine";
+  defaultLayout?: "grid" | "magazine" | "featured" | "cards";
   /** Locale por defecto. @default "en" */
   locale?: string;
   /** Tema visual */

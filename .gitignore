@@ -2,3 +2,5 @@ node_modules/
 dist/
 .env
 *.log
+repomix-output.xml
+run.txt

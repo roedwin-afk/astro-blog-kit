@@ -1,7 +1,7 @@
 import { defineBlogConfig } from 'astro-blog-kit';
 
 export default defineBlogConfig({
-  wpUrl: '__WP_URL__',
+  wpUrl: import.meta.env.WP_API_URL || '__WP_URL__',
   postsPerPage: __POSTS_PER_PAGE__,
   defaultLayout: '__DEFAULT_LAYOUT__',
   locale: '__LOCALE__',
