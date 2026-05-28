@@ -11,10 +11,10 @@ const featured = posts[0] as BlogPost | undefined;
 const rest = posts.slice(1) as BlogPost[];
 ---
 
-<div class="featured">
+<div class="bk-featured">
 
   {featured && (
-    <div class="featured__hero">
+    <div class="bk-featured__hero">
       <BlogCard
         post={featured}
         blogBase={blogBase}
@@ -26,7 +26,7 @@ const rest = posts.slice(1) as BlogPost[];
   )}
 
   {rest.length > 0 && (
-    <div class="featured__grid">
+    <div class="bk-featured__grid">
       {rest.map((post: BlogPost) => (
         <BlogCard
           post={post}
@@ -42,35 +42,35 @@ const rest = posts.slice(1) as BlogPost[];
 </div>
 
 <style>
-  .featured {
+  .bk-featured {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     margin-bottom: 4rem;
   }
 
-  .featured__hero {
+  .bk-featured__hero {
     width: 100%;
   }
 
-  .featured__hero .blog-card--featured .blog-card__thumb {
+  .bk-featured__hero .bk-blog-card--featured .bk-blog-card__thumb {
     aspect-ratio: 21 / 9;
   }
 
-  .featured__grid {
+  .bk-featured__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
   @media (min-width: 640px) {
-    .featured__grid {
+    .bk-featured__grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 1024px) {
-    .featured__grid {
+    .bk-featured__grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }

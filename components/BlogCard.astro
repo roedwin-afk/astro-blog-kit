@@ -82,15 +82,15 @@ const isList = variant === "list";
 
 <style>
   .blog-card {
-    border: 2px solid var(--color-gray-200);
-    background-color: var(--color-white);
+    border: 2px solid var(--bk-gray-200);
+    background-color: var(--bk-white);
     overflow: hidden;
     transition: transform 0.3s ease, border-color 0.3s ease;
   }
 
   .blog-card:hover {
     transform: translateY(-4px);
-    border-color: var(--color-yellow);
+    border-color: var(--bk-yellow);
     border-bottom-width: 4px;
   }
 
@@ -111,7 +111,7 @@ const isList = variant === "list";
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    background-color: var(--color-gray-100);
+    background-color: var(--bk-gray-100);
     overflow: hidden;
     flex-shrink: 0;
   }
@@ -147,8 +147,8 @@ const isList = variant === "list";
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-gray-300);
-    background-color: var(--color-gray-100);
+    color: var(--bk-gray-300);
+    background-color: var(--bk-gray-100);
   }
 
   .blog-card__overlay {
@@ -162,8 +162,8 @@ const isList = variant === "list";
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background-color: var(--color-yellow);
-    color: var(--color-black);
+    background-color: var(--bk-yellow);
+    color: var(--bk-black);
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -190,14 +190,14 @@ const isList = variant === "list";
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--color-gray-400);
+    color: var(--bk-gray-400);
   }
 
   .blog-card__title {
-    font-family: var(--font-heading);
+    font-family: var(--bk-font-heading);
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-black);
+    color: var(--bk-black);
     line-height: 1.05;
     text-transform: uppercase;
     margin: 0;
@@ -214,7 +214,7 @@ const isList = variant === "list";
 
   .blog-card__excerpt {
     font-size: 0.9rem;
-    color: var(--color-gray-600);
+    color: var(--bk-gray-600);
     line-height: 1.65;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -232,7 +232,7 @@ const isList = variant === "list";
     padding-top: 0.75rem;
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--color-black);
+    color: var(--bk-black);
     display: inline-block;
     transition: transform 0.2s ease;
   }

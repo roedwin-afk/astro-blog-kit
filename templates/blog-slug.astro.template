@@ -15,7 +15,7 @@ const { post } = Astro.props;
 const wp = createWPClient(config.wpUrl);
 const comments = post.id ? await wp.getComments(post.id) : [];
 
-const t = {
+const bt = {
   blog: {
     tagline: "__T_TAGLINE__",
     title_line1: "__T_TITLE_LINE1__",
@@ -29,7 +29,7 @@ const t = {
 ---
 
 __LAYOUT_OPEN__
-  <BlogPost post={post} t={t} lang={config.locale ?? "en"} />
+  <BlogPost post={post} t={bt} lang={config.locale ?? "en"} />
   <Comments comments={comments} postId={post.id ?? 0} />
   <CommentForm postId={post.id ?? 0} apiRoute="/api/comments" />
 __LAYOUT_CLOSE__

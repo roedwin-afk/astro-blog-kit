@@ -8,7 +8,7 @@ interface Props extends BlogListProps {}
 const { posts, blogBase, dateLocale, t } = Astro.props;
 ---
 
-<div class="grid">
+<div class="bk-grid">
   {posts.map((post: BlogPost) => (
     <BlogCard
       post={post}
@@ -21,7 +21,7 @@ const { posts, blogBase, dateLocale, t } = Astro.props;
 </div>
 
 <style>
-  .grid {
+  .bk-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -29,13 +29,13 @@ const { posts, blogBase, dateLocale, t } = Astro.props;
   }
 
   @media (min-width: 640px) {
-    .grid {
+    .bk-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 1024px) {
-    .grid {
+    .bk-grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }

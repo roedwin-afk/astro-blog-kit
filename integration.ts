@@ -28,40 +28,33 @@ function generateThemeCSS(theme: BlogTheme = {}): string {
 
   return `
     :root {
-      --color-accent:       ${t.accent};
-      --color-bg:           ${t.background};
-      --color-surface:      ${t.surface};
-      --color-text:         ${t.text};
-      --color-muted:        ${t.muted};
-      --color-muted-light:  ${t.mutedLight};
-      --color-border:       ${t.border};
-      --color-black:        ${t.black};
-      --color-white:        ${t.white};
-      --color-yellow:       ${t.accent};
-      --color-gray-100:     #f3f4f6;
-      --color-gray-200:     #e5e7eb;
-      --color-gray-300:     #d1d5db;
-      --color-gray-400:     #9ca3af;
-      --color-gray-600:     #4b5563;
-      --font-heading:       ${t.fontHeading};
-      --font-body:          ${t.fontBody};
-      --font-mono:          ${t.fontMono};
-      --font-display:       ${t.fontDisplay};
-      --container-max:      ${t.containerMax};
-      --transition:         all 0.2s ease;
+      --bk-accent:       ${t.accent};
+      --bk-background:   ${t.background};
+      --bk-surface:      ${t.surface};
+      --bk-text:         ${t.text};
+      --bk-muted:        ${t.muted};
+      --bk-muted-light:  ${t.mutedLight};
+      --bk-border:       ${t.border};
+      --bk-black:        ${t.black};
+      --bk-white:        ${t.white};
+      --bk-yellow:       ${t.accent};
+      --bk-gray-100:     #f3f4f6;
+      --bk-gray-200:     #e5e7eb;
+      --bk-gray-300:     #d1d5db;
+      --bk-gray-400:     #9ca3af;
+      --bk-gray-600:     #4b5563;
+      --bk-font-heading:       ${t.fontHeading};
+      --bk-font-body:          ${t.fontBody};
+      --bk-font-mono:          ${t.fontMono};
+      --bk-font-display:       ${t.fontDisplay};
+      --bk-container-max:      ${t.containerMax};
+      --bk-transition:         all 0.2s ease;
     }
 
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-
-    body {
-      font-family: var(--font-body);
-      background-color: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.6;
     }
   `;
 }

@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
 const { posts, currentPage, totalPages } = Astro.props;
 
-const t = {
+const bt = {
   blog: {
     tagline: "__T_TAGLINE__",
     title_line1: "__T_TITLE_LINE1__",
@@ -35,7 +35,7 @@ __LAYOUT_OPEN__
     basePath={`${base}blog/page/`}
     blogBase={`${base}blog/`}
     dateLocale={config.locale ?? "en"}
-    t={t}
+    t={bt}
     locale={config.locale ?? "en"}
     layout={config.defaultLayout ?? "magazine"}
   />

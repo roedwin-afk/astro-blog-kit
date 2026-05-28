@@ -9,13 +9,13 @@ const { post, t } = Astro.props;
 const imgUrl = getFeaturedImageUrl(post);
 ---
 
-<main class="post">
+<main class="bk-post">
 
-  <div class="post__hero">
-    <div class="post__hero-inner">
-      <span class="post__tag">Technical Article</span>
-      <h1 class="post__title" set:html={post.title.rendered} />
-      <p class="post__date">
+  <div class="bk-post__hero">
+    <div class="bk-post__hero-inner">
+      <span class="bk-post__tag">Technical Article</span>
+      <h1 class="bk-post__title" set:html={post.title.rendered} />
+      <p class="bk-post__date">
         {new Date(post.date).toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
@@ -26,21 +26,21 @@ const imgUrl = getFeaturedImageUrl(post);
   </div>
 
   {imgUrl && (
-    <div class="post__image-wrap">
+    <div class="bk-post__image-wrap">
       <img
         src={imgUrl}
         alt={post.title.rendered}
-        class="post__image"
+        class="bk-post__image"
       />
     </div>
   )}
 
-  <div class="post__body">
+  <div class="bk-post__body">
 
-    <aside class="post__sidebar">
-      <div class="sidebar__block">
-        <p class="sidebar__label">Published</p>
-        <p class="sidebar__value">
+    <aside class="bk-post__sidebar">
+      <div class="bk-sidebar__block">
+        <p class="bk-sidebar__label">Published</p>
+        <p class="bk-sidebar__value">
           {new Date(post.date).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
@@ -49,23 +49,23 @@ const imgUrl = getFeaturedImageUrl(post);
         </p>
       </div>
 
-      <div class="sidebar__block">
-        <p class="sidebar__label">Category</p>
-        <p class="sidebar__value">
+      <div class="bk-sidebar__block">
+        <p class="bk-sidebar__label">Category</p>
+        <p class="bk-sidebar__value">
           {post._embedded?.["wp:term"]?.[0]?.[0]?.name ?? "General"}
         </p>
       </div>
 
       {post.readingTime && (
-        <div class="sidebar__block">
-          <p class="sidebar__label">Reading time</p>
-          <p class="sidebar__value">~{post.readingTime} min</p>
+        <div class="bk-sidebar__block">
+          <p class="bk-sidebar__label">Reading time</p>
+          <p class="bk-sidebar__value">~{post.readingTime} min</p>
         </div>
       )}
 
-      <div class="sidebar__divider" />
+      <div class="bk-sidebar__divider" />
 
-      <a href="../" class="sidebar__back">
+      <a href="../" class="bk-sidebar__back">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8.5 2.5L4 7L8.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -73,78 +73,78 @@ const imgUrl = getFeaturedImageUrl(post);
       </a>
     </aside>
 
-    <article class="post__content" set:html={post.content.rendered} />
+    <article class="bk-post__content" set:html={post.content.rendered} />
 
   </div>
 
 </main>
 
 <style>
-  .post {
-    background-color: var(--color-bg);
-    font-family: var(--font-body);
+  .bk-post {
+    background-color: var(--bk-bg);
+    font-family: var(--bk-font-body);
     min-height: 100vh;
     padding-bottom: 6rem;
   }
 
-  .post__hero {
-    border-bottom: 1px solid var(--color-border);
+  .bk-post__hero {
+    border-bottom: 1px solid var(--bk-border);
     padding: 5rem 2rem 3rem;
   }
 
-  .post__hero-inner {
+  .bk-post__hero-inner {
     max-width: 1100px;
     margin: 0 auto;
   }
 
-  .post__tag {
+  .bk-post__tag {
     display: inline-block;
-    font-family: var(--font-mono);
+    font-family: var(--bk-font-mono);
     font-size: 0.7rem;
     font-weight: 400;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--color-accent);
-    border: 1px solid var(--color-accent);
+    color: var(--bk-accent);
+    border: 1px solid var(--bk-accent);
     border-radius: 4px;
     padding: 0.2rem 0.65rem;
     margin-bottom: 1.5rem;
   }
 
-  .post__title {
-    font-family: var(--font-display);
+  .bk-post__title {
+    font-family: var(--bk-font-display);
     font-size: clamp(2.4rem, 6vw, 5rem);
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--bk-color-text);
     line-height: 1.05;
     letter-spacing: -0.02em;
     margin: 0 0 1.5rem;
     max-width: 820px;
   }
 
-  .post__date {
-    font-family: var(--font-mono);
+  .bk-post__date {
+    font-family: var(--bk-font-mono);
     font-size: 0.8rem;
-    color: var(--color-muted);
+    color: var(--bk-muted);
     margin: 0;
   }
 
-  .post__image-wrap {
+  .bk-post__image-wrap {
     max-width: 1100px;
     margin: 2.5rem auto;
     padding: 0 2rem;
   }
 
-  .post__image {
+  .bk-post__image {
     width: 100%;
     height: min(55vw, 500px);
     object-fit: cover;
     border-radius: 10px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--bk-border);
     display: block;
   }
 
-  .post__body {
+  .bk-post__body {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -154,7 +154,7 @@ const imgUrl = getFeaturedImageUrl(post);
     align-items: start;
   }
 
-  .post__sidebar {
+  .bk-sidebar {
     position: sticky;
     top: 6rem;
     display: flex;
@@ -162,188 +162,188 @@ const imgUrl = getFeaturedImageUrl(post);
     gap: 1.5rem;
   }
 
-  .sidebar__block {
+  .bk-sidebar__block {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
 
-  .sidebar__label {
-    font-family: var(--font-mono);
+  .bk-sidebar__label {
+    font-family: var(--bk-font-mono);
     font-size: 0.68rem;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--bk-muted);
     margin: 0;
   }
 
-  .sidebar__value {
-    font-family: var(--font-body);
+  .bk-sidebar__value {
+    font-family: var(--bk-font-body);
     font-size: 0.875rem;
-    color: var(--color-muted-light);
+    color: var(--bk-muted-light);
     margin: 0;
   }
 
-  .sidebar__divider {
+  .bk-sidebar__divider {
     height: 1px;
-    background: var(--color-border);
+    background: var(--bk-border);
     margin: 0.5rem 0;
   }
 
-  .sidebar__back {
+  .bk-sidebar__back {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-family: var(--font-mono);
+    font-family: var(--bk-font-mono);
     font-size: 0.75rem;
-    color: var(--color-muted);
+    color: var(--bk-muted);
     text-decoration: none;
     letter-spacing: 0.5px;
     transition: color 0.15s;
   }
 
-  .sidebar__back:hover {
-    color: var(--color-accent);
+  .bk-sidebar__back:hover {
+    color: var(--bk-accent);
   }
 
-  .post__content {
-    color: var(--color-muted-light);
+  .bk-post__content {
+    color: var(--bk-muted-light);
     line-height: 1.85;
     font-size: 1rem;
-    font-family: var(--font-body);
+    font-family: var(--bk-font-body);
     min-width: 0;
   }
 
-  .post__content :global(h2),
-  .post__content :global(h3),
-  .post__content :global(h4) {
-    font-family: var(--font-display);
-    color: var(--color-text);
+  .bk-post__content :global(h2),
+  .bk-post__content :global(h3),
+  .bk-post__content :global(h4) {
+    font-family: var(--bk-font-display);
+    color: var(--bk-text);
     font-weight: 700;
     letter-spacing: -0.01em;
     margin: 2.5rem 0 0.9rem;
     line-height: 1.15;
   }
 
-  .post__content :global(h2) { font-size: 1.75rem; }
-  .post__content :global(h3) { font-size: 1.35rem; }
-  .post__content :global(h4) { font-size: 1.1rem; }
+  .bk-post__content :global(h2) { font-size: 1.75rem; }
+  .bk-post__content :global(h3) { font-size: 1.35rem; }
+  .bk-post__content :global(h4) { font-size: 1.1rem; }
 
-  .post__content :global(p) { margin: 0 0 1.25rem; }
+  .bk-post__content :global(p) { margin: 0 0 1.25rem; }
 
-  .post__content :global(strong) {
-    color: var(--color-text);
+  .bk-post__content :global(strong) {
+    color: var(--bk-text);
     font-weight: 600;
   }
 
-  .post__content :global(a) {
-    color: var(--color-accent);
+  .bk-post__content :global(a) {
+    color: var(--bk-accent);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
 
-  .post__content :global(ul),
-  .post__content :global(ol) {
+  .bk-post__content :global(ul),
+  .bk-post__content :global(ol) {
     padding-left: 1.4rem;
     margin: 0 0 1.4rem;
   }
 
-  .post__content :global(li) { margin-bottom: 0.5rem; }
+  .bk-post__content :global(li) { margin-bottom: 0.5rem; }
 
-  .post__content :global(img) {
+  .bk-post__content :global(img) {
     display: block;
     width: 100%;
     border-radius: 10px;
     margin: 2rem 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--bk-border);
   }
 
-  .post__content :global(blockquote) {
+  .bk-post__content :global(blockquote) {
     margin: 2rem 0;
     padding: 1rem 1.5rem;
-    border-left: 3px solid var(--color-accent);
-    background: var(--color-surface);
-    color: var(--color-text);
+    border-left: 3px solid var(--bk-accent);
+    background: var(--bk-surface);
+    color: var(--bk-text);
     border-radius: 0 8px 8px 0;
     font-style: italic;
   }
 
-  .post__content :global(pre) {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+  .bk-post__content :global(pre) {
+    background: var(--bk-surface);
+    border: 1px solid var(--bk-border);
     border-radius: 8px;
     padding: 1.25rem 1.5rem;
     overflow-x: auto;
     margin: 1.75rem 0;
   }
 
-  .post__content :global(code) {
-    font-family: var(--font-mono);
+  .bk-post__content :global(code) {
+    font-family: var(--bk-font-mono);
     font-size: 0.875rem;
-    color: var(--color-accent);
+    color: var(--bk-accent);
     background: rgba(56, 189, 248, 0.08);
     padding: 0.15em 0.4em;
     border-radius: 4px;
   }
 
-  .post__content :global(pre code) {
+  .bk-post__content :global(pre code) {
     background: none;
     padding: 0;
-    color: var(--color-muted-light);
+    color: var(--bk-muted-light);
   }
 
-  .post__content :global(table) {
+  .bk-post__content :global(table) {
     width: 100%;
     border-collapse: collapse;
     margin: 2rem 0;
     font-size: 0.9rem;
   }
 
-  .post__content :global(th) {
-    background: var(--color-surface);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
+  .bk-post__content :global(th) {
+    background: var(--bk-surface);
+    color: var(--bk-text);
+    border: 1px solid var(--bk-border);
     padding: 0.75rem 1rem;
     text-align: left;
-    font-family: var(--font-mono);
+    font-family: var(--bk-font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
   }
 
-  .post__content :global(td) {
-    border: 1px solid var(--color-border);
+  .bk-post__content :global(td) {
+    border: 1px solid var(--bk-border);
     padding: 0.75rem 1rem;
-    color: var(--color-muted-light);
+    color: var(--bk-muted-light);
   }
 
   @media (max-width: 768px) {
-    .post__hero { padding: 4.5rem 1.25rem 2.5rem; }
+    .bk-post__hero { padding: 4.5rem 1.25rem 2.5rem; }
 
-    .post__image-wrap {
+    .bk-post__image-wrap {
       padding: 0 1.25rem;
       margin: 2rem auto;
     }
 
-    .post__image { height: 240px; }
+    .bk-post__image { height: 240px; }
 
-    .post__body {
+    .bk-post__body {
       grid-template-columns: 1fr;
       gap: 2rem;
       padding: 0 1.25rem;
     }
 
-    .post__sidebar {
+    .bk-post__sidebar {
       position: static;
       flex-direction: row;
       flex-wrap: wrap;
       gap: 1rem 2rem;
       padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--bk-border);
     }
 
-    .sidebar__divider,
-    .sidebar__back { display: none; }
+    .bk-sidebar__divider,
+    .bk-sidebar__back { display: none; }
   }
 </style>

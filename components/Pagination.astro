@@ -49,14 +49,14 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     gap: 0.75rem;
     flex-wrap: wrap;
     padding-top: 3rem;
-    border-top: 2px solid var(--color-gray-200);
+    border-top: 2px solid var(--bk-gray-200);
   }
 
   .pagination__btn {
     padding: 0.6rem 1.25rem;
-    background-color: var(--color-black);
-    color: var(--color-white);
-    font-family: var(--font-heading);
+    background-color: var(--bk-black);
+    color: var(--bk-white);
+    font-family: var(--bk-font-heading);
     font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -66,8 +66,8 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
   .pagination__btn:hover {
-    background-color: var(--color-yellow);
-    color: var(--color-black);
+    background-color: var(--bk-yellow);
+    color: var(--bk-black);
   }
 
   .pagination__pages {
@@ -82,20 +82,20 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     place-items: center;
     font-weight: 700;
     font-size: 0.9rem;
-    color: var(--color-gray-600);
-    border: 2px solid var(--color-gray-200);
+    color: var(--bk-muted);
+    border: 2px solid var(--bk-gray-200);
     text-decoration: none;
     transition: border-color 0.2s ease, color 0.2s ease;
   }
 
   .pagination__page:hover {
-    border-color: var(--color-black);
-    color: var(--color-black);
+    border-color: var(--bk-black);
+    color: var(--bk-black);
   }
 
   .pagination__page--active {
-    background-color: var(--color-yellow);
-    border-color: var(--color-yellow);
-    color: var(--color-black);
+    background-color: var(--bk-yellow);
+    border-color: var(--bk-yellow);
+    color: var(--bk-black);
   }
 </style>
