@@ -1,6 +1,6 @@
 {
   "name": "astro-blog-kit",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A ready-to-use blog system for Astro with WordPress headless support, optional i18n, multiple layouts, and a comment system.",
   "type": "module",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "headless-cms"
   ],
   "peerDependencies": {
-    "astro": "^4.0.0 || ^5.0.0 || ^6.0.0"
+    "astro": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
   },
   "dependencies": {
     "@clack/prompts": "latest"

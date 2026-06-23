@@ -4,10 +4,6 @@
 
 // ── Post ──────────────────────────────────────────────────────
 
-/**
- * Forma normalizada de un post de blog.
- * Compatible con WordPress REST API (_embedded).
- */
 export interface BlogPost {
   id?: number;
   slug: string;
@@ -95,7 +91,7 @@ export interface BlogPostProps {
   lang: string;
 }
 
-// ── Config del paquete ────────────────────────────────────────
+// ── Tema ──────────────────────────────────────────────────────
 
 export interface BlogTheme {
   /** Color de acento principal. @default "#facc15" */
@@ -128,6 +124,38 @@ export interface BlogTheme {
   containerMax?: string;
 }
 
+// ── Hero del blog ─────────────────────────────────────────────
+
+export interface BlogHero {
+  /** Texto del badge superior. @default "Our Blog" */
+  tagline?: string;
+  /** Primera línea del título. @default "Latest" */
+  titleLine1?: string;
+  /** Segunda línea del título (resaltada). @default "Articles" */
+  titleLine2?: string;
+  /** Párrafo descriptivo debajo del título. @default "Welcome to our blog." */
+  description?: string;
+}
+
+// ── UI overrides ──────────────────────────────────────────────
+
+export interface BlogUI {
+  /** Texto del botón "leer más". @default "Read more →" */
+  readMoreLabel?: string;
+  /** Texto del botón de página anterior. @default "Previous" */
+  btnPrev?: string;
+  /** Texto del botón de página siguiente. @default "Next" */
+  btnNext?: string;
+  /** Color de fondo del botón de comentarios. @default var(--bk-accent) */
+  commentButtonColor?: string;
+  /** Color del texto del botón de comentarios. @default var(--bk-black) */
+  commentButtonTextColor?: string;
+  /** Estilo de paginación. @default "minimal" */
+  paginationStyle?: "minimal" | "numbered";
+}
+
+// ── Config del paquete ────────────────────────────────────────
+
 export interface BlogKitConfig {
   /** @default 5 */
   postsPerPage?: number;
@@ -138,6 +166,10 @@ export interface BlogKitConfig {
   collectionName?: string;
   /** Tema visual del blog */
   theme?: BlogTheme;
+  /** Textos del hero/header del blog */
+  hero?: BlogHero;
+  /** Overrides de UI (botones, paginación, labels) */
+  ui?: BlogUI;
 }
 
 // ── getStaticPaths ────────────────────────────────────────────
