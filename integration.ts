@@ -84,25 +84,25 @@ function createThemePlugin(theme: BlogTheme): Plugin {
     load(id) {
       if (id === RESOLVED_VIRTUAL_MODULE_ID) {
         // Retornamos CSS puro — Vite lo procesa como módulo CSS
-        return css;
+        return `export default ${JSON.stringify(css)};`;
       }
     },
     // Fuerza el tipo del módulo como CSS para que Vite lo trate correctamente
-    transform(code, id) {
-      if (id === RESOLVED_VIRTUAL_MODULE_ID) {
-        return {
-          code: `
-const style = document.createElement('style');
-style.id = 'astro-blog-kit-theme';
-style.textContent = ${JSON.stringify(css)};
-if (!document.getElementById('astro-blog-kit-theme')) {
-  document.head.appendChild(style);
-}
-          `.trim(),
-          map: null,
-        };
-      }
-    },
+//     transform(code, id) {
+//       if (id === RESOLVED_VIRTUAL_MODULE_ID) {
+//         return {
+//           code: `
+// const style = document.createElement('style');
+// style.id = 'astro-blog-kit-theme';
+// style.textContent = ${JSON.stringify(css)};
+// if (!document.getElementById('astro-blog-kit-theme')) {
+//   document.head.appendChild(style);
+// }
+//           `.trim(),
+//           map: null,
+//         };
+//       }
+//     },
   };
 }
 

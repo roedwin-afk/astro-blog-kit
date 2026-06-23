@@ -16,6 +16,9 @@ export type {
   PaginationProps,
   PageStaticPath,
   PostStaticPath,
+  BlogTheme,   // si no está
+  BlogHero,
+  BlogUI,
 } from "./types";
 
 // Utils
@@ -41,5 +44,5 @@ export {
 } from "./utils/index.js";
 
 // Define config
-export { defineBlogConfig, toBlogKitConfig } from "./define-config";
+export { defineBlogConfig, toBlogKitConfig, resolveHero, resolveUI } from "./define-config";
 export type { BlogConfig } from "./define-config";
