@@ -102,7 +102,7 @@ const blogBase = getBlogBase(locale, base);
 
 <style>
   .blog {
-    background-color: var(--bk-white);
+    background-color: var(--bk-background);
     padding: 6rem 1rem;
     min-height: 100vh;
   }
@@ -132,14 +132,14 @@ const blogBase = getBlogBase(locale, base);
   .blog__title {
     font-size: clamp(3rem, 8vw, 5rem);
     font-weight: 700;
-    color: var(--bk-black);
+    color: var(--bk-text);
     line-height: 1;
     margin-bottom: 1rem;
   }
 
   .blog__title-highlight {
-    background-color: var(--bk-black);
-    color: var(--bk-yellow);
+    background-color: var(--bk-text);
+    color: var(--bk-accent);
     padding: 0 0.3rem;
   }
 

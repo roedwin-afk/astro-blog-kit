@@ -12,8 +12,8 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   <nav class="pagination" aria-label="Blog pagination">
 
     {currentPage > 1 && (
-      
-       <a href={currentPage === 2 ? blogBase : `${basePath}${currentPage - 1}/`}
+      <a
+        href={currentPage === 2 ? blogBase : `${basePath}${currentPage - 1}/`}
         class="pagination__btn"
       >
         ← {t.blog.btn_prev}
@@ -22,8 +22,8 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     <div class="pagination__pages">
       {pages.map((pageNum) => (
-        
-        <a  href={pageNum === 1 ? blogBase : `${basePath}${pageNum}/`}
+        <a
+          href={pageNum === 1 ? blogBase : `${basePath}${pageNum}/`}
           class={`pagination__page ${pageNum === currentPage ? "pagination__page--active" : ""}`}
           aria-current={pageNum === currentPage ? "page" : undefined}
         >
@@ -49,25 +49,25 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     gap: 0.75rem;
     flex-wrap: wrap;
     padding-top: 3rem;
-    border-top: 2px solid var(--bk-gray-200);
+    border-top: 2px solid var(--bk-border);
   }
 
   .pagination__btn {
     padding: 0.6rem 1.25rem;
-    background-color: var(--bk-black);
-    color: var(--bk-white);
+    background-color: var(--bk-pagination-btn-bg);
+    color: var(--bk-pagination-btn-text);
     font-family: var(--bk-font-heading);
     font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: var(--bk-transition);
   }
 
   .pagination__btn:hover {
-    background-color: var(--bk-yellow);
-    color: var(--bk-black);
+    background-color: var(--bk-pagination-btn-hover-bg);
+    color: var(--bk-pagination-btn-hover-text);
   }
 
   .pagination__pages {
@@ -82,20 +82,20 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     place-items: center;
     font-weight: 700;
     font-size: 0.9rem;
-    color: var(--bk-muted);
-    border: 2px solid var(--bk-gray-200);
+    color: var(--bk-text);
+    border: 2px solid var(--bk-border);
     text-decoration: none;
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition: var(--bk-transition);
   }
 
   .pagination__page:hover {
-    border-color: var(--bk-black);
-    color: var(--bk-black);
+    border-color: var(--bk-pagination-btn-bg);
+    color: var(--bk-text);
   }
 
   .pagination__page--active {
-    background-color: var(--bk-yellow);
-    border-color: var(--bk-yellow);
-    color: var(--bk-black);
+    background-color: var(--bk-pagination-active-bg);
+    border-color: var(--bk-pagination-active-bg);
+    color: var(--bk-pagination-active-text);
   }
 </style>

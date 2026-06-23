@@ -4,140 +4,108 @@
 
 import type { AstroIntegration } from "astro";
 import type { Plugin } from "vite";
-import type { BlogKitConfig, BlogTheme } from "./types";
-
-const VIRTUAL_MODULE_ID = "virtual:astro-blog-kit/theme";
-const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
+import type { BlogKitConfig, BlogTheme, BlogUI } from "./types";
 
 /**
- * Genera el bloque de CSS variables a partir del tema.
+ * Genera el bloque de CSS variables a partir del tema y la UI.
  */
-function generateThemeCSS(theme: BlogTheme = {}): string {
+function generateThemeCSS(theme: BlogTheme = {}, ui: BlogUI = {}): string {
   const t = {
-    accent: theme.accent ?? "#facc15",
-    background: theme.background ?? "#ffffff",
-    surface: theme.surface ?? "#f8f8f8",
-    text: theme.text ?? "#0a0a0a",
-    muted: theme.muted ?? "#6b7280",
-    mutedLight: theme.mutedLight ?? "#9ca3af",
-    border: theme.border ?? "#e5e7eb",
-    black: theme.black ?? "#0a0a0a",
-    white: theme.white ?? "#ffffff",
-    fontHeading: theme.fontHeading ?? "Georgia, serif",
-    fontBody: theme.fontBody ?? "system-ui, sans-serif",
-    fontMono: theme.fontMono ?? "monospace",
-    fontDisplay: theme.fontDisplay ?? "Georgia, serif",
+    accent:       theme.accent       ?? "#facc15",
+    background:   theme.background   ?? "#ffffff",
+    surface:      theme.surface      ?? "#f8f8f8",
+    text:         theme.text         ?? "#0a0a0a",
+    muted:        theme.muted        ?? "#6b7280",
+    mutedLight:   theme.mutedLight   ?? "#9ca3af",
+    border:       theme.border       ?? "#e5e7eb",
+    black:        theme.black        ?? "#0a0a0a",
+    white:        theme.white        ?? "#ffffff",
+    fontHeading:  theme.fontHeading  ?? "Georgia, serif",
+    fontBody:     theme.fontBody     ?? "system-ui, sans-serif",
+    fontMono:     theme.fontMono     ?? "monospace",
+    fontDisplay:  theme.fontDisplay  ?? "Georgia, serif",
     containerMax: theme.containerMax ?? "1200px",
   };
 
-  return `
-:root {
-  --bk-accent:        ${t.accent};
-  --bk-background:    ${t.background};
-  --bk-surface:       ${t.surface};
-  --bk-text:          ${t.text};
-  --bk-muted:         ${t.muted};
-  --bk-muted-light:   ${t.mutedLight};
-  --bk-border:        ${t.border};
-  --bk-black:         ${t.black};
-  --bk-white:         ${t.white};
-  --bk-yellow:        ${t.accent};
-  --bk-gray-100:      #f3f4f6;
-  --bk-gray-200:      #e5e7eb;
-  --bk-gray-300:      #d1d5db;
-  --bk-gray-400:      #9ca3af;
-  --bk-gray-600:      #4b5563;
-  --bk-font-heading:  ${t.fontHeading};
-  --bk-font-body:     ${t.fontBody};
-  --bk-font-mono:     ${t.fontMono};
-  --bk-font-display:  ${t.fontDisplay};
-  --bk-container-max: ${t.containerMax};
-  --bk-transition:    all 0.2s ease;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-`.trim();
+  return [
+    ":root {",
+    `  --bk-accent:                    ${t.accent};`,
+    `  --bk-background:                ${t.background};`,
+    `  --bk-surface:                   ${t.surface};`,
+    `  --bk-text:                      ${t.text};`,
+    `  --bk-muted:                     ${t.muted};`,
+    `  --bk-muted-light:               ${t.mutedLight};`,
+    `  --bk-border:                    ${t.border};`,
+    `  --bk-black:                     ${t.black};`,
+    `  --bk-white:                     ${t.white};`,
+    `  --bk-yellow:                    ${t.accent};`,
+    `  --bk-gray-100:                  #f3f4f6;`,
+    `  --bk-gray-200:                  #e5e7eb;`,
+    `  --bk-gray-300:                  #d1d5db;`,
+    `  --bk-gray-400:                  #9ca3af;`,
+    `  --bk-gray-600:                  #4b5563;`,
+    `  --bk-font-heading:              ${t.fontHeading};`,
+    `  --bk-font-body:                 ${t.fontBody};`,
+    `  --bk-font-mono:                 ${t.fontMono};`,
+    `  --bk-font-display:              ${t.fontDisplay};`,
+    `  --bk-container-max:             ${t.containerMax};`,
+    `  --bk-transition:                all 0.2s ease;`,
+    `  --bk-pagination-btn-bg:         ${ui.paginationBtnBg         ?? t.accent};`,
+    `  --bk-pagination-btn-text:       ${ui.paginationBtnText       ?? t.black};`,
+    `  --bk-pagination-btn-hover-bg:   ${ui.paginationBtnHoverBg   ?? t.text};`,
+    `  --bk-pagination-btn-hover-text: ${ui.paginationBtnHoverText ?? t.white};`,
+    `  --bk-pagination-active-bg:      ${ui.paginationActiveBg      ?? t.accent};`,
+    `  --bk-pagination-active-text:    ${ui.paginationActiveText    ?? t.black};`,
+    `  --bk-comment-btn-bg:            ${ui.commentButtonColor      ?? t.accent};`,
+    `  --bk-comment-btn-text:          ${ui.commentButtonTextColor  ?? t.black};`,
+    "}",
+  ].join("\n");
 }
 
 /**
- * Plugin de Vite que expone el tema como un virtual module CSS.
- * Esto permite que Astro procese el CSS en SSR correctamente,
- * sin depender de JavaScript en el cliente para inyectar variables.
- *
- * Uso en cualquier componente .astro del paquete:
- *   import 'virtual:astro-blog-kit/theme';
+ * Plugin de Vite que inyecta el CSS del tema como módulo CSS real,
+ * compatible con Rolldown (Astro 7+).
  */
-function createThemePlugin(theme: BlogTheme): Plugin {
-  const css = generateThemeCSS(theme);
+function createThemePlugin(theme: BlogTheme, ui: BlogUI): Plugin {
+  const THEME_ID = "\0astro-blog-kit-theme.css";
+  const css = generateThemeCSS(theme, ui);
 
   return {
     name: "astro-blog-kit:theme",
+    enforce: "pre",
+
     resolveId(id) {
-      if (id === VIRTUAL_MODULE_ID) {
-        return RESOLVED_VIRTUAL_MODULE_ID;
+      if (id === "astro-blog-kit-theme.css") {
+        return THEME_ID;
       }
     },
+
     load(id) {
-      if (id === RESOLVED_VIRTUAL_MODULE_ID) {
-        // Retornamos CSS puro — Vite lo procesa como módulo CSS
-        return `export default ${JSON.stringify(css)};`;
+      if (id === THEME_ID) {
+        return css;
       }
     },
-    // Fuerza el tipo del módulo como CSS para que Vite lo trate correctamente
-//     transform(code, id) {
-//       if (id === RESOLVED_VIRTUAL_MODULE_ID) {
-//         return {
-//           code: `
-// const style = document.createElement('style');
-// style.id = 'astro-blog-kit-theme';
-// style.textContent = ${JSON.stringify(css)};
-// if (!document.getElementById('astro-blog-kit-theme')) {
-//   document.head.appendChild(style);
-// }
-//           `.trim(),
-//           map: null,
-//         };
-//       }
-//     },
+
+    transform(code, id) {
+      if (id === THEME_ID) {
+        return { code, map: null, meta: { vite: { lang: "css" } } };
+      }
+    },
   };
 }
 
 /**
  * Integración principal de astro-blog-kit.
- *
- * @example
- * ```js
- * // astro.config.mjs
- * import { defineConfig } from 'astro/config';
- * import { blogKit } from 'astro-blog-kit/integration';
- *
- * export default defineConfig({
- *   integrations: [
- *     blogKit({
- *       postsPerPage: 6,
- *       defaultLayout: 'featured',
- *       theme: {
- *         accent: '#facc15',
- *         fontHeading: 'Inter, sans-serif',
- *       },
- *     }),
- *   ],
- * });
- * ```
  */
 export function blogKit(config: BlogKitConfig = {}): AstroIntegration {
   const resolvedConfig: Required<BlogKitConfig> = {
-    postsPerPage: config.postsPerPage ?? 5,
-    defaultLayout: config.defaultLayout ?? "magazine",
+    postsPerPage:   config.postsPerPage   ?? 5,
+    defaultLayout:  config.defaultLayout  ?? "magazine",
     collectionName: config.collectionName ?? "blog",
-    i18n: config.i18n ?? { locales: [], defaultLocale: "en" },
-    theme: config.theme ?? {},
-    hero: config.hero ?? {},   // ← agregar
-    ui: config.ui ?? {},
+    i18n:           config.i18n           ?? { locales: [], defaultLocale: "en" },
+    theme:          config.theme          ?? {},
+    hero:           config.hero           ?? {},
+    ui:             config.ui             ?? {},
   };
 
   return {
@@ -149,20 +117,15 @@ export function blogKit(config: BlogKitConfig = {}): AstroIntegration {
           `astro-blog-kit initialized — layout: ${resolvedConfig.defaultLayout}, postsPerPage: ${resolvedConfig.postsPerPage}`
         );
 
-        // Registra el virtual module como plugin de Vite
-        // Esto garantiza que las CSS variables existen en SSR y en el build estático
+        // Pasa tanto theme como ui al plugin
         updateConfig({
           vite: {
-            plugins: [createThemePlugin(resolvedConfig.theme)],
+            plugins: [createThemePlugin(resolvedConfig.theme, resolvedConfig.ui)],
           },
         });
 
-        // Inyecta el virtual module en cada página como CSS real
-        // "page-ssr" = se ejecuta en el servidor, garantiza que el style
-        // esté disponible antes del primer paint
-        injectScript("page-ssr", `import "${VIRTUAL_MODULE_ID}";`);
+        injectScript("page-ssr", `import "astro-blog-kit-theme.css";`);
 
-        // Inyecta config global accesible desde cualquier componente
         injectScript(
           "page-ssr",
           `globalThis.__BLOG_KIT_CONFIG__ = ${JSON.stringify(resolvedConfig)};`

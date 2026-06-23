@@ -1,6 +1,7 @@
 ---
 import { BlogPost, Comments, CommentForm } from "astro-blog-kit/components";
 import { createWPClient, getStaticPathsForPosts } from "astro-blog-kit/utils";
+import { resolveHero, resolveUI } from 'astro-blog-kit';
 import config from "../../../blog.config";
 __LAYOUT_IMPORT_SLUG__
 
@@ -15,15 +16,15 @@ const { post } = Astro.props;
 const wp = createWPClient(config.wpUrl);
 const comments = post.id ? await wp.getComments(post.id) : [];
 
-const bt = {
+const t = {
   blog: {
-    tagline: "__T_TAGLINE__",
-    title_line1: "__T_TITLE_LINE1__",
-    title_line2: "__T_TITLE_LINE2__",
-    description: "__T_DESCRIPTION__",
-    btncta: "__T_BTNCTA__",
-    btn_prev: "__T_BTN_PREV__",
-    btn_next: "__T_BTN_NEXT__",
+    tagline:     hero.tagline,
+    title_line1: hero.titleLine1,
+    title_line2: hero.titleLine2,
+    description: hero.description,
+    btncta:      ui.readMoreLabel,
+    btn_prev:    ui.btnPrev,
+    btn_next:    ui.btnNext,
   },
 };
 ---
