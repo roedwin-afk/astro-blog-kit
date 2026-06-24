@@ -13,7 +13,11 @@ export async function getStaticPaths() {
 
 const { posts, currentPage, totalPages } = Astro.props;
 
-const t = {
+const locale = config.locale ?? 'en';
+const hero = resolveHero(config.hero, locale);
+const ui = resolveUI(config.ui, locale);
+
+const bt = {
   blog: {
     tagline:     hero.tagline,
     title_line1: hero.titleLine1,

@@ -16,7 +16,11 @@ const { post } = Astro.props;
 const wp = createWPClient(config.wpUrl);
 const comments = post.id ? await wp.getComments(post.id) : [];
 
-const t = {
+const locale = config.locale ?? 'en';
+const hero = resolveHero(config.hero, locale);
+const ui = resolveUI(config.ui, locale);
+
+const bt = {
   blog: {
     tagline:     hero.tagline,
     title_line1: hero.titleLine1,
