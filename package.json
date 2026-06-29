@@ -1,6 +1,6 @@
 {
   "name": "astro-blog-kit",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A ready-to-use blog system for Astro with WordPress headless support, optional i18n, multiple layouts, and a comment system.",
   "type": "module",
   "license": "MIT",

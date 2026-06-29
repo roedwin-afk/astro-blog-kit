@@ -2,7 +2,16 @@
 // astro-blog-kit · define-config.ts
 // ─────────────────────────────────────────────────────────────
 
-import type { BlogKitConfig, BlogTheme, BlogHero, BlogUI } from "./types";
+import type {
+  BlogKitConfig,
+  BlogTheme,
+  BlogHero,
+  BlogHeroLocale,
+  BlogUI,
+  BlogUILocale,
+} from "./types";
+
+// ── Interfaces públicas ───────────────────────────────────────
 
 export interface BlogConfig {
   /** URL de tu WordPress. Ej: https://cms.tudominio.com */
@@ -26,132 +35,170 @@ export interface BlogConfig {
   };
 }
 
-/**
- * Define la configuración del blog con tipado completo.
- *
- * @example
- * ```ts
- * // blog.config.ts
- * import { defineBlogConfig } from 'astro-blog-kit';
- *
- * export default defineBlogConfig({
- *   wpUrl: 'https://cms.tudominio.com',
- *   postsPerPage: 5,
- *   defaultLayout: 'featured',
- *   locale: 'en',
- *   theme: {
- *     accent: '#facc15',
- *     background: '#0a1a0a',
- *     text: '#ffffff',
- *   },
- *   hero: {
- *     tagline: 'Technical Resources',
- *     titleLine1: 'Building',
- *     titleLine2: 'Insights',
- *     description: 'Practical knowledge for architects and engineers.',
- *   },
- *   ui: {
- *     readMoreLabel: 'Read more →',
- *     btnPrev: 'Previous',
- *     btnNext: 'Next',
- *     commentButtonColor: '#facc15',
- *     commentButtonTextColor: '#0a0a0a',
- *     paginationStyle: 'minimal',
- *   },
- * });
- * ```
- */
+// ── defineBlogConfig ──────────────────────────────────────────
+
 export function defineBlogConfig(config: BlogConfig): BlogConfig {
   return {
-    postsPerPage: 5,
+    postsPerPage:  5,
     defaultLayout: "magazine",
-    locale: "en",
+    locale:        "en",
     ...config,
   };
 }
 
-/**
- * Convierte BlogConfig a BlogKitConfig para usar en astro.config.mjs
- */
+// ── toBlogKitConfig ───────────────────────────────────────────
+
 export function toBlogKitConfig(config: BlogConfig): BlogKitConfig {
   return {
-    postsPerPage: config.postsPerPage,
+    postsPerPage:  config.postsPerPage,
     defaultLayout: config.defaultLayout,
-    theme: config.theme,
-    hero: config.hero,
-    ui: config.ui,
-    i18n: config.i18n,
+    theme:         config.theme,
+    hero:          config.hero,
+    ui:            config.ui,
+    i18n:          config.i18n,
   };
 }
 
-/**
- * Resuelve los textos del hero con fallbacks según el locale.
- * Usado internamente por BlogList.astro
- */
+// ── Helpers de detección de formato ──────────────────────────
+
+function isHeroI18n(hero: BlogHero): hero is Record<string, BlogHeroLocale> {
+  return typeof hero === "object" &&
+    Object.values(hero).some((v) => typeof v === "object" && v !== null);
+}
+
+function isUIi18n(ui: BlogUI): ui is Record<string, BlogUILocale> {
+  return typeof ui === "object" &&
+    Object.values(ui).some((v) => typeof v === "object" && v !== null);
+}
+
+// ── Defaults internos ─────────────────────────────────────────
+
+const HERO_DEFAULTS: Record<string, Required<BlogHeroLocale>> = {
+  en: {
+    tagline:     "Our Blog",
+    titleLine1:  "Latest",
+    titleLine2:  "Articles",
+    description: "Welcome to our blog.",
+  },
+  es: {
+    tagline:     "Nuestro Blog",
+    titleLine1:  "Últimos",
+    titleLine2:  "Artículos",
+    description: "Bienvenido a nuestro blog.",
+  },
+};
+
+const UI_DEFAULTS: Record<string, Required<BlogUILocale>> = {
+  en: {
+    readMoreLabel:          "Read more →",
+    btnPrev:                "Previous",
+    btnNext:                "Next",
+    commentButtonColor:     "var(--bk-accent)",
+    commentButtonTextColor: "var(--bk-black)",
+    paginationStyle:        "minimal",
+    paginationBtnBg:        "var(--bk-accent)",
+    paginationBtnText:      "var(--bk-black)",
+    paginationBtnHoverBg:   "var(--bk-text)",
+    paginationBtnHoverText: "var(--bk-white)",
+    paginationActiveBg:     "var(--bk-accent)",
+    paginationActiveText:   "var(--bk-black)",
+  },
+  es: {
+    readMoreLabel:          "Leer más →",
+    btnPrev:                "Anterior",
+    btnNext:                "Siguiente",
+    commentButtonColor:     "var(--bk-accent)",
+    commentButtonTextColor: "var(--bk-black)",
+    paginationStyle:        "minimal",
+    paginationBtnBg:        "var(--bk-accent)",
+    paginationBtnText:      "var(--bk-black)",
+    paginationBtnHoverBg:   "var(--bk-text)",
+    paginationBtnHoverText: "var(--bk-white)",
+    paginationActiveBg:     "var(--bk-accent)",
+    paginationActiveText:   "var(--bk-black)",
+  },
+};
+
+// ── resolveHero ───────────────────────────────────────────────
+
 export function resolveHero(
   hero: BlogHero | undefined,
   locale: string
-): Required<BlogHero> {
-  const defaults: Record<string, Required<BlogHero>> = {
-    en: {
-      tagline: "Our Blog",
-      titleLine1: "Latest",
-      titleLine2: "Articles",
-      description: "Welcome to our blog.",
-    },
-    es: {
-      tagline: "Nuestro Blog",
-      titleLine1: "Últimos",
-      titleLine2: "Artículos",
-      description: "Bienvenido a nuestro blog.",
-    },
-  };
+): Required<BlogHeroLocale> {
+  const d = HERO_DEFAULTS[locale] ?? HERO_DEFAULTS["en"];
 
-  const d = defaults[locale] ?? defaults["en"];
+  if (!hero) return d;
 
+  if (isHeroI18n(hero)) {
+    // Formato i18n: busca locale exacto → fallback 'en' → defaults internos
+    const src = hero[locale] ?? hero["en"] ?? {};
+    return {
+      tagline:     src.tagline     ?? d.tagline,
+      titleLine1:  src.titleLine1  ?? d.titleLine1,
+      titleLine2:  src.titleLine2  ?? d.titleLine2,
+      description: src.description ?? d.description,
+    };
+  }
+
+  // Formato plano legacy — backward compatible
+  const flat = hero as BlogHeroLocale;
   return {
-    tagline: hero?.tagline ?? d.tagline,
-    titleLine1: hero?.titleLine1 ?? d.titleLine1,
-    titleLine2: hero?.titleLine2 ?? d.titleLine2,
-    description: hero?.description ?? d.description,
+    tagline:     flat.tagline     ?? d.tagline,
+    titleLine1:  flat.titleLine1  ?? d.titleLine1,
+    titleLine2:  flat.titleLine2  ?? d.titleLine2,
+    description: flat.description ?? d.description,
   };
 }
 
-/**
- * Resuelve los labels de UI con fallbacks según el locale.
- * Usado internamente por BlogList.astro y Pagination.astro
- */
+// ── resolveUI ─────────────────────────────────────────────────
+
 export function resolveUI(
   ui: BlogUI | undefined,
   locale: string
-): Required<BlogUI> {
-  const defaults: Record<string, Required<BlogUI>> = {
-    en: {
-      readMoreLabel: "Read more →",
-      btnPrev: "Previous",
-      btnNext: "Next",
-      commentButtonColor: "var(--bk-accent)",
-      commentButtonTextColor: "var(--bk-black)",
-      paginationStyle: "minimal",
-    },
-    es: {
-      readMoreLabel: "Leer más →",
-      btnPrev: "Anterior",
-      btnNext: "Siguiente",
-      commentButtonColor: "var(--bk-accent)",
-      commentButtonTextColor: "var(--bk-black)",
-      paginationStyle: "minimal",
-    },
-  };
+): Required<BlogUILocale> {
+  const d = UI_DEFAULTS[locale] ?? UI_DEFAULTS["en"];
 
-  const d = defaults[locale] ?? defaults["en"];
+  if (!ui) return d;
 
+  if (isUIi18n(ui)) {
+    // Campos visuales (colores) viven en cualquier locale; los buscamos
+    // en todos los locales disponibles para usarlos como fallback compartido.
+    const allLocales = Object.values(ui as Record<string, BlogUILocale>);
+    const visual = allLocales.find((v) => v.paginationBtnBg) ?? {};
+
+    const src = (ui as Record<string, BlogUILocale>)[locale] ??
+                (ui as Record<string, BlogUILocale>)["en"] ?? {};
+
+    return {
+      readMoreLabel:          src.readMoreLabel          ?? d.readMoreLabel,
+      btnPrev:                src.btnPrev                ?? d.btnPrev,
+      btnNext:                src.btnNext                ?? d.btnNext,
+      commentButtonColor:     src.commentButtonColor     ?? visual.commentButtonColor     ?? d.commentButtonColor,
+      commentButtonTextColor: src.commentButtonTextColor ?? visual.commentButtonTextColor ?? d.commentButtonTextColor,
+      paginationStyle:        src.paginationStyle        ?? visual.paginationStyle        ?? d.paginationStyle,
+      paginationBtnBg:        src.paginationBtnBg        ?? visual.paginationBtnBg        ?? d.paginationBtnBg,
+      paginationBtnText:      src.paginationBtnText      ?? visual.paginationBtnText      ?? d.paginationBtnText,
+      paginationBtnHoverBg:   src.paginationBtnHoverBg   ?? visual.paginationBtnHoverBg   ?? d.paginationBtnHoverBg,
+      paginationBtnHoverText: src.paginationBtnHoverText ?? visual.paginationBtnHoverText ?? d.paginationBtnHoverText,
+      paginationActiveBg:     src.paginationActiveBg     ?? visual.paginationActiveBg     ?? d.paginationActiveBg,
+      paginationActiveText:   src.paginationActiveText   ?? visual.paginationActiveText   ?? d.paginationActiveText,
+    };
+  }
+
+  // Formato plano legacy — backward compatible
+  const flat = ui as BlogUILocale;
   return {
-    readMoreLabel: ui?.readMoreLabel ?? d.readMoreLabel,
-    btnPrev: ui?.btnPrev ?? d.btnPrev,
-    btnNext: ui?.btnNext ?? d.btnNext,
-    commentButtonColor: ui?.commentButtonColor ?? d.commentButtonColor,
-    commentButtonTextColor: ui?.commentButtonTextColor ?? d.commentButtonTextColor,
-    paginationStyle: ui?.paginationStyle ?? d.paginationStyle,
+    readMoreLabel:          flat.readMoreLabel          ?? d.readMoreLabel,
+    btnPrev:                flat.btnPrev                ?? d.btnPrev,
+    btnNext:                flat.btnNext                ?? d.btnNext,
+    commentButtonColor:     flat.commentButtonColor     ?? d.commentButtonColor,
+    commentButtonTextColor: flat.commentButtonTextColor ?? d.commentButtonTextColor,
+    paginationStyle:        flat.paginationStyle        ?? d.paginationStyle,
+    paginationBtnBg:        flat.paginationBtnBg        ?? d.paginationBtnBg,
+    paginationBtnText:      flat.paginationBtnText      ?? d.paginationBtnText,
+    paginationBtnHoverBg:   flat.paginationBtnHoverBg   ?? d.paginationBtnHoverBg,
+    paginationBtnHoverText: flat.paginationBtnHoverText ?? d.paginationBtnHoverText,
+    paginationActiveBg:     flat.paginationActiveBg     ?? d.paginationActiveBg,
+    paginationActiveText:   flat.paginationActiveText   ?? d.paginationActiveText,
   };
 }

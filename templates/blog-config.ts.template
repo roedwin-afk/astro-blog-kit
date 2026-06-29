@@ -2,9 +2,9 @@ import { defineBlogConfig } from 'astro-blog-kit';
 
 export default defineBlogConfig({
   wpUrl: import.meta.env.WP_API_URL || '__WP_URL__',
-  postsPerPage: __POSTS_PER_PAGE__,
+  postsPerPage:  __POSTS_PER_PAGE__,
   defaultLayout: '__DEFAULT_LAYOUT__',
-  locale: '__LOCALE__',
+  locale:        '__LOCALE__',
 
   theme: {
     accent:       '#facc15',
@@ -23,28 +23,49 @@ export default defineBlogConfig({
     containerMax: '1200px',
   },
 
+  // ── Hero ──────────────────────────────────────────────────────
+  // Sitio i18n: un objeto por locale.
+  // Sitio monolingüe: puedes usar el formato plano:
+  //   hero: { tagline: 'Our Blog', titleLine1: 'Latest', ... }
   hero: {
-    tagline:     '__T_TAGLINE__',
-    titleLine1:  '__T_TITLE_LINE1__',
-    titleLine2:  '__T_TITLE_LINE2__',
-    description: '__T_DESCRIPTION__',
+    en: {
+      tagline:     'Our Blog',
+      titleLine1:  'Latest',
+      titleLine2:  'Articles',
+      description: 'Welcome to our blog.',
+    },
+    es: {
+      tagline:     'Nuestro Blog',
+      titleLine1:  'Últimos',
+      titleLine2:  'Artículos',
+      description: 'Bienvenido a nuestro blog.',
+    },
   },
 
+  // ── UI labels ────────────────────────────────────────────────
+  // Los labels de texto van por locale.
+  // Los campos visuales (colores, paginationStyle) son compartidos:
+  // ponlos en cualquier locale y aplican a todos.
   ui: {
-    readMoreLabel:          '__T_BTNCTA__',
-    btnPrev:                '__T_BTN_PREV__',
-    btnNext:                '__T_BTN_NEXT__',
-    commentButtonColor:     'var(--bk-accent)',
-    commentButtonTextColor: 'var(--bk-black)',
-    paginationStyle:        'minimal',
-    // ── Personalización de paginación (opcional) ──────────────
-    // Descomenta y cambia los valores según tu marca.
-    // Por defecto usan el accent y black del tema.
-    // paginationBtnBg:         '#facc15',  // fondo botón PREV/NEXT
-    // paginationBtnText:       '#0a0a0a',  // texto botón PREV/NEXT
-    // paginationBtnHoverBg:    '#0a0a0a',  // fondo hover
-    // paginationBtnHoverText:  '#ffffff',  // texto hover
-    // paginationActiveBg:      '#facc15',  // fondo página activa
-    // paginationActiveText:    '#0a0a0a',  // texto página activa
+    en: {
+      readMoreLabel: 'Read more →',
+      btnPrev:       'Previous',
+      btnNext:       'Next',
+      // ── Colores compartidos (van aquí una sola vez) ──────────
+      commentButtonColor:     'var(--bk-accent)',
+      commentButtonTextColor: 'var(--bk-black)',
+      paginationStyle:        'minimal',
+      // paginationBtnBg:         '#facc15',
+      // paginationBtnText:       '#0a0a0a',
+      // paginationBtnHoverBg:    '#0a0a0a',
+      // paginationBtnHoverText:  '#ffffff',
+      // paginationActiveBg:      '#facc15',
+      // paginationActiveText:    '#0a0a0a',
+    },
+    es: {
+      readMoreLabel: 'Leer más →',
+      btnPrev:       'Anterior',
+      btnNext:       'Siguiente',
+    },
   },
 });
