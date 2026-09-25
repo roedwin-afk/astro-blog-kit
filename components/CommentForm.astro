@@ -83,86 +83,88 @@ const { postId, apiRoute = "/api/comments", replyToId } = Astro.props;
 </section>
 
 <script define:vars={{ apiRoute }}>
-  const form = document.getElementById("cf-form");
-  const submitBtn = document.getElementById("cf-submit");
-  const submitText = document.getElementById("cf-submit-text");
-  const submitLoading = document.getElementById("cf-submit-loading");
-  const successMsg = document.getElementById("cf-success");
-  const errorMsg = document.getElementById("cf-error");
-  const replyIndicator = document.getElementById("cf-reply-indicator");
-  const replyName = document.getElementById("cf-reply-name");
-  const cancelReply = document.getElementById("cf-cancel-reply");
-  const parentInput = document.getElementById("cf-parent");
+  function initCommentForm() {
+    const form = document.getElementById("cf-form");
+    if (!form) return; // esta página no tiene el formulario (o ya fue inicializado y removido del DOM)
 
-  // Maneja clicks en botones de reply desde Comments.astro
-  document.querySelectorAll("[data-reply-to]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const replyTo = btn.getAttribute("data-reply-to");
-      const name = btn.getAttribute("data-reply-name");
+    const submitBtn = document.getElementById("cf-submit");
+    const submitText = document.getElementById("cf-submit-text");
+    const submitLoading = document.getElementById("cf-submit-loading");
+    const successMsg = document.getElementById("cf-success");
+    const errorMsg = document.getElementById("cf-error");
+    const replyIndicator = document.getElementById("cf-reply-indicator");
+    const replyName = document.getElementById("cf-reply-name");
+    const cancelReply = document.getElementById("cf-cancel-reply");
+    const parentInput = document.getElementById("cf-parent");
 
-      parentInput.value = replyTo;
-      replyName.textContent = name;
-      replyIndicator.classList.add("comment-form__reply-indicator--active");
+    // Maneja clicks en botones de reply desde Comments.astro
+    document.querySelectorAll("[data-reply-to]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const replyTo = btn.getAttribute("data-reply-to");
+        const name = btn.getAttribute("data-reply-name");
 
-      // Scroll al form
-      document.getElementById("comment-form").scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+        parentInput.value = replyTo;
+        replyName.textContent = name;
+        replyIndicator.classList.add("comment-form__reply-indicator--active");
+
+        document.getElementById("comment-form").scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       });
     });
-  });
 
-  // Cancela reply
-  cancelReply.addEventListener("click", () => {
-    parentInput.value = "0";
-    replyIndicator.classList.remove("comment-form__reply-indicator--active");
-  });
-
-  // Submit
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // Reset mensajes
-    successMsg.style.display = "none";
-    errorMsg.style.display = "none";
-
-    // Loading state
-    submitBtn.disabled = true;
-    submitText.style.display = "none";
-    submitLoading.style.display = "inline";
-
-    const formData = new FormData(form);
-    const payload = {
-      post: Number(formData.get("post")),
-      parent: Number(formData.get("parent")) || 0,
-      author_name: formData.get("author_name"),
-      author_email: formData.get("author_email"),
-      content: formData.get("content"),
-    };
-
-    try {
-      const res = await fetch(apiRoute, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Request failed");
-
-      // Éxito
-      successMsg.style.display = "block";
-      form.reset();
+    // Cancela reply
+    cancelReply.addEventListener("click", () => {
       parentInput.value = "0";
       replyIndicator.classList.remove("comment-form__reply-indicator--active");
+    });
 
-    } catch {
-      errorMsg.style.display = "block";
-    } finally {
-      submitBtn.disabled = false;
-      submitText.style.display = "inline";
-      submitLoading.style.display = "none";
-    }
-  });
+    // Submit
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      successMsg.style.display = "none";
+      errorMsg.style.display = "none";
+
+      submitBtn.disabled = true;
+      submitText.style.display = "none";
+      submitLoading.style.display = "inline";
+
+      const formData = new FormData(form);
+      const payload = {
+        post: Number(formData.get("post")),
+        parent: Number(formData.get("parent")) || 0,
+        author_name: formData.get("author_name"),
+        author_email: formData.get("author_email"),
+        content: formData.get("content"),
+      };
+
+      try {
+        const res = await fetch(apiRoute, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) throw new Error("Request failed");
+
+        successMsg.style.display = "block";
+        form.reset();
+        parentInput.value = "0";
+        replyIndicator.classList.remove("comment-form__reply-indicator--active");
+
+      } catch {
+        errorMsg.style.display = "block";
+      } finally {
+        submitBtn.disabled = false;
+        submitText.style.display = "inline";
+        submitLoading.style.display = "none";
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", initCommentForm);
 </script>
 
 <style>
